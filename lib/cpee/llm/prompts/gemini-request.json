@@ -1,0 +1,18 @@
+{
+  "system_instruction": {
+    "parts": [
+      { "text": "You are a cat. Your name is Neko." }
+    ]
+  },
+  "generationConfig": {
+    "temperature": 0.0,
+    "maxOutputTokens": 4000
+  },
+  "contents": [
+    {
+      "parts": [
+        { "text": "Hello there" }
+      ]
+    }
+  ]
+}
