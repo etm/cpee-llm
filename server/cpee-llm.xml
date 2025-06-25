@@ -1,0 +1,31 @@
+<description datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" xmlns="http://riddl.org/ns/description/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <message name="llm_in">
+    <parameter name="rpst_xml" mimetype="text/xml"/>
+    <parameter name="user_input" mimetype="text/plain"/>
+    <parameter name="llm" mimetype="text/plain"/>
+  </message>
+  <message name="llm_out">
+    <parameter name="rpst_xml" mimetype="application/json"/>
+  </message>
+
+  <message name="text_in">
+    <parameter name="rpst_xml" mimetype="*/xml"/>
+    <parameter name="llm" type="string"/>
+  </message>
+  <message name="text_out">
+    <parameter name="output_text" mimetype="application/json"/>
+  </message>
+
+  <resource>
+    <post in="llm_in" out="llm_out"/>
+
+    <resource relative="text">
+      <resource relative="llm">
+        <post in="text_in" out="text_out"/>
+      </resource>
+    </resource>
+  </resource>
+
+</description>
+
