@@ -19,14 +19,9 @@ status, res = srv.post [
 if status >= 200 && status < 300
   res
 else
-  pp status
-  pp res
-  pp JSON.parse(res[0].value().read())
   raise "llm did not work"
 end
 description = JSON.parse(res[0].value().read())['output_cpee']
-pp description
-
 
 srv = Riddl::Client.new("https://cpee.org/flow/engine/#{ARGV[2]}/properties/dslx/")
 status, res = srv.put [
@@ -34,7 +29,4 @@ status, res = srv.put [
 ]
 if status >= 200 && status < 300
   res
-else
-  pp status
-  pp res
 end
