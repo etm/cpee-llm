@@ -21,9 +21,6 @@ end #}}}
 def adapt_model(myllm,doc,user_input) #{{{
   input_cpee = doc.to_s()
   input_mermaid = cpee_to_mermaid(doc.to_s())
-  pp "incoming mermaid: #{input_mermaid}"
-  File.write('incoming_mermaid.mmd',input_mermaid)
-  #input_mermaid = File.read(File.join(Dir.pwd,'mermaid_example'))
 
   begin
     llm_response = adapt_mermaid_model(myllm,user_input,input_mermaid)
@@ -34,10 +31,8 @@ def adapt_model(myllm,doc,user_input) #{{{
       return llm_response
     end
   rescue LLMError => e_llm
-    pp e_llm.message
     raise e_llm
   rescue Exception => e
-    pp e.message
     raise e
   end
 end #}}}
@@ -45,8 +40,6 @@ end #}}}
 def generate_text(myllm,doc) #{{{
   input_cpee = doc.to_s()
   input_mermaid = cpee_to_mermaid(doc.to_s())
-  pp "incoming mermaid: #{input_mermaid}"
-  File.write('incoming_mermaid.mmd',input_mermaid)
 
   begin
     llm_response = generate_plain_text(myllm,input_mermaid)
@@ -78,7 +71,6 @@ def handle_error_repeat(llm_response, myllm, myhandler, doc, user_input) #{{{
   elsif llm_response == 404
     raise LLMError.new("Your request is wrong :(", llm_response)
   else
-    # the function was working before, but now - not any more. check the updates, credentials, etc.
     if myllm.include? 'gpt'
       myllm = "gemini-2.5-pro-preview-05-06"
     elsif myllm.include? 'gemini'
@@ -102,7 +94,6 @@ def main_function(myllm,doc,user_input) #{{{
     llm_response = generate_mermaid_model(myllm,user_input) || ""
   else
     input_mermaid = cpee_to_mermaid(doc.to_s())
-    #input_mermaid = File.read(File.join(Dir.pwd,'mermaid_example'))
     exit()
     llm_response = adapt_mermaid_model(myllm,user_input,input_mermaid) || ""
   end
@@ -134,7 +125,6 @@ def llm_error_handling(llm_response, myllm, myhandler, doc, user_input) #{{{
       end
       final_response = myhandler.call(myllm, doc, user_input)
     else
-      # the function was working before, but now - not any more. check the updates, credentials, etc.
       if myllm.include? 'gpt'
         myllm = "gemini-2.5-pro-preview-05-06"
       elsif myllm.include? 'gemini'
