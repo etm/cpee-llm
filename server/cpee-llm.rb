@@ -39,7 +39,9 @@ class CreateMermaid < Riddl::Implementation #{{{
     #get parameters
     begin
       input_cpee = @p[0].value().read()
+      pp input_cpee
       user_input = @p[1].value().read()
+      pp user_input
       myllm = @p[2].value().read()
       doc = XML::Smart.string(input_cpee)
     rescue Exception => e
@@ -56,7 +58,11 @@ class CreateMermaid < Riddl::Implementation #{{{
       end
     else
       begin
+        pp "before llm response"
         llm_response = adapt_model(myllm,doc,user_input)
+        pp "after llm response"
+        pp llm_response
+        File.write('debug.mmd',llm_response)
       rescue LLMError => e
         @status = e.http_response
         return Riddl::Parameter::Complex.new("llm_out","application/json",{:error => e.message}.to_json())
@@ -64,7 +70,9 @@ class CreateMermaid < Riddl::Implementation #{{{
     end
 
     begin
+      pp "before transformation"
       output_cpee = mermaid_to_cpee(llm_response)
+      pp "after transformation"
     rescue Exception => e
       @status = 500
       return Riddl::Parameter::Complex.new("llm_out","application/json",{:error => e}.to_json())
@@ -108,6 +116,32 @@ class CreateText < Riddl::Implementation #{{{
   end
 end #}}}
 
+class CreateGeneric < Riddl::Implementation #{{{
+  def response
+    #get parameters
+    begin
+      myllm = @p[0].value.read
+      user_input = @p[1].value.read
+      system_prompt = @p[2].value.read
+      format = @p[3].value.read
+      pp format
+      puts format.class
+    rescue Exception => e
+      @status = 400
+      return Riddl::Parameter::Complex.new("generic_out","application/json",{:error => e}.to_json())
+    end
+
+    begin
+      llm_response = generate_generic(myllm,user_input,system_prompt,format)
+    rescue LLMError => e
+      @status = e.http_response
+      return Riddl::Parameter::Complex.new("generic_out","application/json",{:error => e.message}.to_json())
+    end
+
+    return(Riddl::Parameter::Complex.new("generic_out","application/json",{:user_input => user_input, :used_llm => myllm, :system_prompt => system_prompt, :llm_response => llm_response, :status => "success"}.to_json()))
+  end
+end #}}}
+
 Riddl::Server.new(File.dirname(__FILE__) + '/cpee-llm.xml', :port => 9297) do
   accessible_description true
   cross_site_xhr true
@@ -118,6 +152,9 @@ Riddl::Server.new(File.dirname(__FILE__) + '/cpee-llm.xml', :port => 9297) do
       on resource 'llm' do
         run(CreateText, 'llm') if post 'text_in'
       end
+    end
+    on resource 'generic' do
+      run(CreateGeneric, 'generic') if post 'generic_in'
     end
   end
 end.loop!

@@ -87,8 +87,8 @@ end #}}}
 
 def generate_mermaid_model(llm, user_input) #{{{
   max_tokens = 4000
-  temperature = 0
-  system_prompt = File.read(File.join(__dir__,"prompts/generate.txt"))
+  temperature = 0.1
+  system_prompt = File.read(File.join(__dir__,"prompts/generate1.txt"))
   user_prompt = "Consider following process description: #{user_input}. Generate a BPMN model in Mermaid.js format."
   if llm.include? 'gpt'
     new_mermaid = generate_gpt(llm,system_prompt,user_prompt,max_tokens,temperature)

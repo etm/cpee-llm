@@ -17,6 +17,17 @@
     <parameter name="output_text" mimetype="application/json"/>
   </message>
 
+  <message name="generic_in">
+    <parameter name="llm" mimetype="text/plain"/>
+    <parameter name="user_input" mimetype="text/plain"/>
+    <parameter name="system_prompt" mimetype="text/plain"/>
+    <parameter name="format" mimetype="text/plain"/>
+  </message>
+  <message name="generic_out">
+    <parameter name="output_text" mimetype="application/json"/>
+  </message>
+
+
   <resource>
     <post in="llm_in" out="llm_out"/>
 
@@ -24,6 +35,10 @@
       <resource relative="llm">
         <post in="text_in" out="text_out"/>
       </resource>
+    </resource>
+
+    <resource relative="generic">
+      <post in="generic_in" out="generic_out"/>
     </resource>
   </resource>
 
