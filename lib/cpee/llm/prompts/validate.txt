@@ -1,0 +1,74 @@
+Given the relevant the Mermaid.js BPMN model, and the provided Mermaid.js BPMN syntax and structural rules, perform the validation.
+mermaid model: .
+
+Mermaid.js BPMN Syntax:
+- The graph must use the LR (Left to Right) direction.
+- Each Mermaid.js node must have the following structure:
+  id:type:shape and label
+  - id: a unique integer from 0 to n.
+  - type: BPMN element type → startevent, endevent, task, subprocess, exclusivegateway, inclusivegateway, parallelgateway.
+  - Shapes and labels:
+    - Start event → id:startevent:((startevent))
+    - End event → id:endevent:(((endevent)))
+    - Task → id:task:(Task Label)
+    - Subprocess → id:subprocess:(Subprocess Label)
+    - Exclusive gateway → id:exclusivegateway:{x}
+    - Parallel gateway → id:parallelgateway:{AND}
+    - Inclusive gateway → id:inclusivegateway:{O}
+
+Hard Structural Rules:
+- Tasks:
+  - No empty tasks are allowed: every task node must have a descriptive label.
+  - “Default branches” between gateways are allowed — edges that go directly from one gateway to another without any task in between.
+- Gateways:
+  - Every split gateway must be matched with a corresponding merge gateway of the same type.
+  - No implicit merges are allowed — merges must always be explicit.
+  - No split gateway is permitted without a matching merge.
+- Flow correctness:
+  - Each path/branch must start from the start event and lead to the end event.
+  - Each incoming node must have its own separate edge to the target node.
+- Reused nodes:
+  - If a node occurs more than once, reference it by repeating the full node declaration like this - id:type:shape and label (e.g., 2:task:(do something)).
+  - It is strictly prohibited to use only the ID (e.g., 2) without type and to use other short versions like id:type (e.g.,2:task).
+- Edges:
+  - All nodes must be connected with -->.
+  - Edge labels (for conditions/annotations) must be written as |text| between nodes.
+- Simplification Rule:
+  - If you cannot generate a model that fully meets all requirements due to the complexity of the description, you must simplify the model until it fully satisfies every requirement.
+
+### Validation Procedure Summary:
+When validating a Mermaid BPMN graph against the above rules, apply these steps systematically:
+
+1. **Basic Syntax Validation**
+   - Confirm the graph uses LR direction.
+   - Verify all nodes follow the `id:type:shape and label` format with unique integer IDs.
+   - Check every task and subprocess node has a non-empty descriptive label.
+   - Ensure node types are valid BPMN types.
+
+2. **Connectivity Validation**
+   - Confirm all edges use `-->` syntax and connect valid existing nodes.
+   - Ensure exactly one start event and at least one end event exist.
+   - Verify the graph is connected: all nodes are reachable from start and lead to an end event.
+
+3. **Gateway Structural Validation**
+   - Identify all gateways as splits (≥2 outgoing edges) or merges (≥2 incoming edges).
+   - Confirm every split gateway has a corresponding matching merge gateway of the same type.
+   - Ensure no implicit merges (e.g., branches merging into a gateway of a different type without an explicit merge).
+   - Verify all gateways are connected (no isolated gateways).
+
+4. **Task and Subprocess Rules**
+   - Verify no empty task or subprocess nodes.
+   - Confirm tasks are not orphaned: they have both incoming and outgoing edges unless start/end tasks.
+
+5. **Flow Semantics**
+   - Exclusive gateways must have at least two outgoing branches.
+   - Parallel gateways’ splits must be followed by matching merges before continuing.
+   - All paths must start at the start event and lead to an end event.
+
+6. **Reused Nodes Validation**
+   - Each reused node must be fully re-declared (with id:type:shape and label), never referenced by ID only or shorthand.
+
+7. **Simplification Rule**
+   - If any rule above fails, simplify the model by removing redundant gateways or tasks, adding missing merges, or merging sequential gateways until the model fully satisfies all rules.
+
+Return only Mermaid.js code as plain text, without markdown formatting or explanation.
