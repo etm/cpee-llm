@@ -26,6 +26,9 @@ Each Mermaid.js node must have the following structure:
 
 Hard Structural Rules:
 Tasks:
+  A Task represents a real business or system action that produces an external or domain-relevant effect.
+  Some process descriptions imply internal process-control logic that is not explicitly mentioned in the text (loop counters, variables initalization, math operations, etc.)
+  When necessary to create a complete and executable process model, additional tasks may be introduced to generate, initialize, update, or transform process data required by gateways, loops, routing decisions, or downstream activities. Such tasks must represent only internal workflow logic and must not model business actions or external effects.
   No empty tasks are allowed: every task node must have a descriptive label.
   “Default branches” between gateways are allowed — i.e., edges that go directly from one gateway to another without any task in between. These represent “nothing happens”.
 
@@ -33,6 +36,7 @@ Gateways:
   Every split gateway must be matched with a corresponding merge gateway of the same type.
   No implicit merges are allowed — merges must always be explicit.
   No split gateway is permitted without a matching merge.
+  Any variable used in a loop condition MUST be derived from a task.
 
 Flow correctness:
   Each path/branch must start from the start event and lead to the end event.
