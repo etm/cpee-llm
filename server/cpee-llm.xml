@@ -4,6 +4,9 @@
     <parameter name="rpst_xml" mimetype="text/xml"/>
     <parameter name="user_input" mimetype="text/plain"/>
     <parameter name="llm" mimetype="text/plain"/>
+    <optional>
+      <parameter name="prompt" mimetype="text/plain"/>
+    </optional>
   </message>
   <message name="llm_out">
     <parameter name="rpst_xml" mimetype="application/json"/>
@@ -27,9 +30,17 @@
     <parameter name="output_text" mimetype="application/json"/>
   </message>
 
+  <message name="dataflow_in">
+    <parameter name="rpst_xml" mimetype="text/xml"/>
+    <parameter name="llm" mimetype="text/plain"/>
+  </message>
 
   <resource>
     <post in="llm_in" out="llm_out"/>
+
+    <resource relative="dataflow">
+      <post in="dataflow_in" out="llm_out"/>
+    </resource>
 
     <resource relative="text">
       <resource relative="llm">
@@ -40,6 +51,13 @@
     <resource relative="generic">
       <post in="generic_in" out="generic_out"/>
     </resource>
+
+    <resource relative="validate">
+      <resource relative="xml">
+        <post in="dataflow_in" out="llm_out"/>
+      </resource>
+    </resource>
+
   </resource>
 
 </description>
