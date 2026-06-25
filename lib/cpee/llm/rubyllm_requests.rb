@@ -51,15 +51,14 @@ def generate_content(myllm,system_prompt,user_prompt,max_tokens,temperature) #{{
   chat = connect_llm(mykey,myllm)
   chat.with_instructions system_prompt
   chat.with_temperature(temperature)
-  if myllm.include?("gemini")
-    chat.with_params(generationConfig:{maxOutputTokens: max_tokens})
-  else
-    chat.with_params(max_tokens: max_tokens)
+  if max_tokens != 0
+    if myllm.include?("gemini")
+      chat.with_params(generationConfig:{maxOutputTokens: max_tokens})
+    else
+      chat.with_params(max_tokens: max_tokens)
+    end
   end
-  pp "before response"
   response = chat.ask user_prompt
-  pp response
-  #puts JSON.parse(response.content)
   return response.content
 rescue Exception => e
   raise LLMError.new(e.message, e.response.code)
@@ -72,7 +71,6 @@ def generate_json_content(myllm,system_prompt,user_prompt,max_tokens,temperature
   when /mistralai/,/gemma/,/qwen/,/Qwen/
     mykey = File.read File.join(__dir__,'morpheus.key')
   else
-    puts "ELSE branch"
     raise LLMError.new("Selected LLM model does not exist or is not supported. Please, select another LLM model.", "", 400)
   end
   mykey.strip!
@@ -90,25 +88,20 @@ rescue Exception => e
  end #}}}
 
 def generate_mermaid_model(llm, user_input) #{{{
-  pp "IN RUBYllm"
   max_tokens = 4000
   temperature = 0.1
   system_prompt = File.read(File.join(__dir__,"prompts/generate1.txt"))
   user_prompt = "Consider following process description: #{user_input}. Generate a BPMN model in Mermaid.js format."
-  pp "HERE"
   new_mermaid = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature)
   return new_mermaid
 end #}}}
 
 def adapt_mermaid_model(llm, user_input, process_model) #{{{
-  pp "IN adapt RUBYllm"
   max_tokens = 4000
   temperature = 0
   system_prompt = File.read(File.join(__dir__,"prompts/apply.txt"))
   user_prompt = "Consider following process model: #{process_model}. Update this process model according to provided changes #{user_input}."
-  pp "before new adapt"
   new_mermaid = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature)
-  pp "after new adapt"
   return new_mermaid
 end #}}}
 
@@ -122,19 +115,40 @@ def generate_plain_text(llm, user_input) #{{{
 end #}}}
 
 def generate_generic_content(llm, user_input, system_prompt, json) #{{{
-  pp "start generic"
-  max_tokens = 10000
+  max_tokens = 20000
   temperature = 0
-  pp json
   if json == 'true'
-    pp "in generate json"
     process_description = generate_json_content(llm,system_prompt,user_input,max_tokens,temperature)
   else
-    pp "generic"
     process_description = generate_content(llm,system_prompt,user_input,max_tokens,temperature)
-    pp "end generic"
   end
   return process_description
-  pp "end"
+end #}}}
+
+def generate_dataflow_content(llm, mermaid_model, api_specification) #{{{
+  max_tokens = 10000
+  temperature = 0.1
+  system_prompt = File.read(File.join(__dir__,"prompts/dataflow.txt"))
+  user_prompt = "Given process mode #{mermaid_model} and task specification #{api_specification} with endpoint data, define the execution context and return a JSON specification."
+  dataflow = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature)
+  return dataflow
+end #}}}
+
+def generate_endpoint_mermaid_model(llm, user_input,endpoints) #{{{
+  max_tokens = 4000
+  temperature = 0.1
+  system_prompt = File.read(File.join(__dir__,"prompts/generate_enpoints.txt"))
+  user_prompt = "Consider the following process description: #{user_input} and the provided endpoint list: #{endpoints}. Interpret the process description as business intent and generate an executable BPMN model in Mermaid.js format using only the available endpoint capabilities."
+  new_mermaid = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature)
+  return new_mermaid
+end #}}}
+
+def validate_xml_model(llm,cpee_model) #{{{
+  max_tokens = 0
+  temperature = 0.1
+  system_prompt = File.read(File.join(__dir__,"prompts/validate_xml.txt"))
+  user_prompt = "Consider following CPEE XML promcess model created by autobpmn.ai: #{cpee_model}. Repair the model so that it becomes executable. Return only the repaired XML without any comments or markdown formatting."
+  repaired_cpee = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature)
+  return repaired_cpee
 end #}}}
 
