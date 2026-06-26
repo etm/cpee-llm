@@ -63,9 +63,6 @@ class CreateMermaid < Riddl::Implementation #{{{
           llm_response = generate_model(myllm,user_input)
         end
       rescue LLMError => e
-        pp "iiiiiii"
-        pp e
-        pp e.http_response
         @status = e.http_response
         return Riddl::Parameter::Complex.new("llm_out","application/json",{:error => e.message}.to_json())
       end

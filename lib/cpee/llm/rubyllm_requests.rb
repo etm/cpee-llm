@@ -62,7 +62,6 @@ def generate_content(myllm,system_prompt,user_prompt,max_tokens,temperature) #{{
       chat.with_params(max_tokens: max_tokens)
     end
   end
-  pp "before generate"
   response = chat.ask user_prompt
   return response.content
 rescue Faraday::TimeoutError => e
