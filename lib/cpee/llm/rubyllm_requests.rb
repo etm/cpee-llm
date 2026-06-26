@@ -15,6 +15,8 @@ end #}}}
 def connect_llm(mykey,myllm) #{{{
   chat = nil
   RubyLLM.configure do |config|
+    config.request_timeout = 40
+    config.max_retries = 1
     case myllm
     when /gpt/
       config.openai_api_key = mykey
@@ -29,7 +31,7 @@ def connect_llm(mykey,myllm) #{{{
       config.openai_use_system_role = true
       chat = RubyLLM.chat(model: myllm,provider: :openai,assume_model_exists: true)
     else
-      raise LLMError.new("Selected LLM model does not exist or is not supported. Please, select another LLM model.", "", 400)
+      raise LLMError.new("Selected LLM model does not exist or is not supported. Please, select another LLM model.",  400)
     end
   end
   return chat
@@ -44,7 +46,7 @@ def generate_content(myllm,system_prompt,user_prompt,max_tokens,temperature) #{{
   when /mistralai/,/gemma/,/qwen/,/Qwen/
     mykey = File.read File.join(__dir__,'morpheus.key')
   else
-    raise LLMError.new("Selected LLM model does not exist or is not supported. Please, select another LLM model.", "", 400)
+    raise LLMError.new("Selected LLM model does not exist or is not supported. Please, select another LLM model.", 400)
   end
   mykey.strip!
 
@@ -54,14 +56,19 @@ def generate_content(myllm,system_prompt,user_prompt,max_tokens,temperature) #{{
   if max_tokens != 0
     if myllm.include?("gemini")
       chat.with_params(generationConfig:{maxOutputTokens: max_tokens})
+    elsif myllm.include?("gpt")
+      chat.with_params(max_completion_tokens: max_tokens)
     else
       chat.with_params(max_tokens: max_tokens)
     end
   end
+  pp "before generate"
   response = chat.ask user_prompt
   return response.content
+rescue Faraday::TimeoutError => e
+  raise LLMError.new(e.message, 504)
 rescue Exception => e
-  raise LLMError.new(e.message, e.response.code)
+  raise LLMError.new(e.message, 500)
  end #}}}
 
 def generate_json_content(myllm,system_prompt,user_prompt,max_tokens,temperature) #{{{
@@ -71,7 +78,7 @@ def generate_json_content(myllm,system_prompt,user_prompt,max_tokens,temperature
   when /mistralai/,/gemma/,/qwen/,/Qwen/
     mykey = File.read File.join(__dir__,'morpheus.key')
   else
-    raise LLMError.new("Selected LLM model does not exist or is not supported. Please, select another LLM model.", "", 400)
+    raise LLMError.new("Selected LLM model does not exist or is not supported. Please, select another LLM model.", 400)
   end
   mykey.strip!
   chat = connect_llm(mykey,myllm)
@@ -83,8 +90,10 @@ def generate_json_content(myllm,system_prompt,user_prompt,max_tokens,temperature
   response = chat.ask user_prompt
   #puts JSON.parse(response.content)
   return response.content
+rescue Faraday::TimeoutError => e
+  raise LLMError.new(e.message, 504)
 rescue Exception => e
-  raise LLMError.new(e.message, e.response.code)
+  raise LLMError.new(e.message, 500)
  end #}}}
 
 def generate_mermaid_model(llm, user_input) #{{{

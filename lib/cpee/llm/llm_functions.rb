@@ -127,12 +127,21 @@ end #}}}
 def validate_cpee_model(myllm,cpee_model) #{{{
   begin
     llm_response = validate_xml_model(myllm,cpee_model)
-    # raise exceptions if response is empty for some reason
+    #check if response is xml:
     if llm_response.nil? || llm_response.empty?
       raise LLMError.new("Something went wrong and your content was not generated", llm_response)
     elsif llm_response.strip.downcase == "perfect"
       return cpee_model
     else
+      llm_response = llm_response.strip
+      inside = llm_response.scan(/```(\w+)?\s*\n(.*?)\n```/m)
+      llm_response = inside.empty? ? llm_response : inside[0][1]
+      #check if response is xml:
+      begin
+        XML::Smart.string(llm_response)
+      rescue Nokogiri::XML::SyntaxError => e
+        raise LLMError.new("Something went wrong and llm was not able to generate valid xml model", llm_response)
+      end
       return llm_response
     end
   rescue LLMError => e_llm
