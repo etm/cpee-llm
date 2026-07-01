@@ -38,6 +38,15 @@ Gateways:
   No split gateway is permitted without a matching merge.
   Any variable used in a loop condition MUST be derived from a task.
 
+Loop Abstraction:
+  If a process contains repetitive behavior, it MUST NOT be unrolled into repeated tasks.
+  Instead, it MUST be modeled as a loop using an exclusive gateway for loop control.
+  The gateway branches either back to the loop body or to the exit path.
+  For time-based loops, timer or wait tasks may directly provide the loop termination condition. Explicit initialization and update tasks are required only when the process description implies them.
+
+Parallel Logic:
+  Create a parallel gateway when two or more activities must occur concurrently or when one activity controls the duration of another. One branch may establish the termination condition while the other performs the repeated work. Merge parallel branches with a matching parallel gateway.
+
 Flow correctness:
   Each path/branch must start from the start event and lead to the end event.
   Each incoming node must have its own separate edge to the target node.
