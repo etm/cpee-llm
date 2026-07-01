@@ -5,7 +5,13 @@
     <parameter name="user_input" mimetype="text/plain"/>
     <parameter name="llm" mimetype="text/plain"/>
     <optional>
-      <parameter name="prompt" mimetype="text/plain"/>
+      <parameter name="prompt_type" mimetype="text/plain"/>
+    </optional>
+    <optional>
+      <parameter name="endpoints" mimetype="text/xml"/>
+    </optional>
+    <optional>
+      <parameter name="temperature" mimetype="text/plain"/>
     </optional>
   </message>
   <message name="llm_out">
@@ -25,6 +31,9 @@
     <parameter name="user_input" mimetype="text/plain"/>
     <parameter name="system_prompt" mimetype="text/plain"/>
     <parameter name="format" mimetype="text/plain"/>
+    <optional>
+      <parameter name="temperature" mimetype="text/plain"/>
+    </optional>
   </message>
   <message name="generic_out">
     <parameter name="output_text" mimetype="application/json"/>

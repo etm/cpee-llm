@@ -36,52 +36,41 @@ end #}}}
 
 class CreateMermaid < Riddl::Implementation #{{{
   def response
-    #get parameters
-    begin
-      input_cpee = @p[0].value().read()
-      user_input = @p[1].value().read()
-      myllm = @p[2].value().read()
-      doc = XML::Smart.string(input_cpee)
-      prompt_type = @p[3]&.value&.read
-    rescue Exception => e
-      @status = 400
-      return Riddl::Parameter::Complex.new("llm_out","application/json",{:error => e}.to_json())
-    end
+    input_cpee  = @p.shift.value.read
+    user_input  = @p.shift.value.read
+    myllm       = @p.shift.value.read
+    prompt_type = @p.shift.value.read if @p[0]&.name == 'prompt_type'
+    endpoints   = @p.shift.value.read if @p[0]&.name == 'endpoints'
+    temperature = @p.shift.value.read if @p[0]&.name == 'temperature'
 
-    # if @p[3] == 'generate'
-    # elsif @p[3] == 'adapt'
-    # elsif @p[3] == 'endpoints'
-    # end
-    # to be changed after
-    if(doc.root().empty?()) then
-      begin
-        if prompt_type == 'generate_with_endpoints'
-          # get endpoints (hardcoded for demo, in future separate step)
-          endpoints_description = get_demo_endpoints()
-          llm_response = generate_endpoint_model(myllm, user_input, endpoints_description)
-        else
-          llm_response = generate_model(myllm,user_input)
-        end
-      rescue LLMError => e
-        @status = e.http_response
-        return Riddl::Parameter::Complex.new("llm_out","application/json",{:error => e.message}.to_json())
-      end
-    else
-      begin
-        llm_response = adapt_model(myllm,doc,user_input)
-      rescue LLMError => e
-        @status = e.http_response
-        return Riddl::Parameter::Complex.new("llm_out","application/json",{:error => e.message}.to_json())
-      end
-    end
+    doc = XML::Smart.string(input_cpee)
+
     begin
-      output_cpee = mermaid_to_cpee(llm_response)
-    rescue Exception => e
-      @status = 500
-      return Riddl::Parameter::Complex.new("llm_out","application/json",{:error => e}.to_json())
+      output_cpee = if prompt_type == 'generate_noendpoints'
+        pp "generate no"
+        llm_response = generate_model(myllm,user_input,temperature)
+        mermaid_to_cpee(llm_response)
+      elsif prompt_type == 'generate_endpoints'
+        pp "generate end"
+        # get endpoints (hardcoded for demo, in future separate step)
+        llm_response = generate_endpoint_model(myllm, user_input, get_demo_endpoints())
+        mermaid_to_cpee(llm_response)
+      elsif prompt_type == 'adapt_noendpoints'
+        pp "adapt model"
+        llm_response = adapt_model(myllm,doc,user_input)
+        mermaid_to_cpee(llm_response)
+      elsif prompt_type == 'adapt_endpoints'
+        pp "adapt_end"
+        xml_endpoints = XML::Smart.string(endpoints)
+        adapt_cpee_model(myllm,doc,user_input,xml_endpoints, get_demo_endpoints())
+      end
     end
 
     return(Riddl::Parameter::Complex.new("llm_out","application/json",{:user_input => user_input, :used_llm => myllm, :input_cpee => input_cpee, :input_intermediate => doc.root().empty?() ? "" : cpee_to_mermaid(doc.to_s()), :output_intermediate => llm_response, :output_cpee => output_cpee, :status => "Success"}.to_json()))
+  rescue LLMError => e
+    pp 'here in error'
+    @status = e&.http_response || 400
+    return Riddl::Parameter::Complex.new("llm_out","application/json",{ :error => "#{prompt_type} #{e.message}"}.to_json())
   end
 end #}}}
 
@@ -127,13 +116,14 @@ class CreateGeneric < Riddl::Implementation #{{{
       user_input = @p[1].value.read
       system_prompt = @p[2].value.read
       format = @p[3].value.read
+      temperature = @p[4]&.value&.read
     rescue Exception => e
       @status = 400
       return Riddl::Parameter::Complex.new("generic_out","application/json",{:error => e}.to_json())
     end
 
     begin
-      llm_response = generate_generic(myllm,user_input,system_prompt,format)
+      llm_response = generate_generic(myllm,user_input,system_prompt,format,temperature)
     rescue LLMError => e
       @status = e.http_response
       return Riddl::Parameter::Complex.new("generic_out","application/json",{:error => e.message}.to_json())
@@ -164,7 +154,8 @@ class CreateDataFlow < Riddl::Implementation #{{{
     begin
       dataflow = generate_dataflow(myllm,mermaid_model,api_speck)
     rescue LLMError => e
-      @status = e.http_response
+      pp e.http_response
+      @status = e.http_response || 400
       return Riddl::Parameter::Complex.new("generic_out","application/json",{:error => e.message}.to_json())
     end
 
