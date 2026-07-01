@@ -144,6 +144,8 @@ def integrate_dataflow(cpee_model,dataflow)
     end
   end
 
+  pp json_e
+  pp cpee_model
   # ==============================conditions (only alternative)=======================
   json_e['gateway_conditions'].each do |i, value|
     if i.end_with?("s")
@@ -151,8 +153,12 @@ def integrate_dataflow(cpee_model,dataflow)
       choose = cpee_model.find("//d:choose[@eid = '#{sid}']").first
       if choose.nil?
         loop = cpee_model.find("//d:loop[@eid = '#{sid}']").first
-        cur_cond = CGI.unescapeHTML(loop.attributes['condition'])
-        loop.attributes['condition'] = value['branches'][cur_cond]
+        if loop.nil?
+          #do nothing it is parralel
+        else
+          cur_cond = CGI.unescapeHTML(loop.attributes['condition'])
+          loop.attributes['condition'] = value['branches'][cur_cond]
+        end
       else
         cur_gateway =  cpee_model.find("//d:choose[@eid = '#{sid}']/d:alternative")
         cur_gateway.each do |branch|

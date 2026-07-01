@@ -49,7 +49,6 @@ def generate_content(myllm,system_prompt,user_prompt,max_tokens,temperature) #{{
     raise LLMError.new("Selected LLM model does not exist or is not supported. Please, select another LLM model.", 400)
   end
   mykey.strip!
-
   chat = connect_llm(mykey,myllm)
   chat.with_instructions system_prompt
   chat.with_temperature(temperature)
@@ -95,9 +94,9 @@ rescue Exception => e
   raise LLMError.new(e.message, 500)
  end #}}}
 
-def generate_mermaid_model(llm, user_input) #{{{
+def generate_mermaid_model(llm, user_input, temperature = 0) #{{{
   max_tokens = 4000
-  temperature = 0.1
+  temperature = temperature.nil? ? 0.1 : temperature.to_f
   system_prompt = File.read(File.join(__dir__,"prompts/generate1.txt"))
   user_prompt = "Consider following process description: #{user_input}. Generate a BPMN model in Mermaid.js format."
   new_mermaid = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature)
@@ -113,6 +112,15 @@ def adapt_mermaid_model(llm, user_input, process_model) #{{{
   return new_mermaid
 end #}}}
 
+def adapt_xml_model(llm, user_input, process_model, api_specification) #{{{
+  max_tokens = 20000
+  temperature = 0
+  system_prompt = File.read(File.join(__dir__,"prompts/adapt_xml.txt"))
+  user_prompt = "Consider following process model: #{process_model.to_s} and task specification #{api_specification} with endpoint data. Update this process model according to provided changes #{user_input}."
+  new_cpee = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature)
+  return new_cpee
+end #}}}
+
 def generate_plain_text(llm, user_input) #{{{
   max_tokens = 4000
   temperature = 0
@@ -122,9 +130,9 @@ def generate_plain_text(llm, user_input) #{{{
   return process_description
 end #}}}
 
-def generate_generic_content(llm, user_input, system_prompt, json) #{{{
+def generate_generic_content(llm, user_input, system_prompt, json, temperature = 0) #{{{
   max_tokens = 20000
-  temperature = 0
+  temperature = temperature.nil? ? 0 : temperature.to_f
   if json == 'true'
     process_description = generate_json_content(llm,system_prompt,user_input,max_tokens,temperature)
   else
