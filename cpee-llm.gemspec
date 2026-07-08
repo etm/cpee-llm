@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name             = "cpee-llm"
-  s.version          = "1.0.0"
+  s.version          = "1.0.1"
   s.platform         = Gem::Platform::RUBY
   s.license          = "LGPL-3.0-or-later"
   s.summary          = "CPEE Conversational Agents"
@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.authors          = ['Nataliia Klievtsova', 'Matthias Ehrendorfer', 'Juergen eTM Mangler']
 
   s.email            = 'n.klievtsova@gmail.com'
-  s.homepage         = 'http://cpee.org/'
+  s.homepage         = 'http://github.com/etm/cpee-llm/'
 
   s.add_runtime_dependency 'riddl', '~> 1.0'
   s.add_runtime_dependency 'json', '~> 2.10'
