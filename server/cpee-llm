@@ -1,0 +1,27 @@
+#!/usr/bin/ruby
+
+if File.exist?(File.join(__dir__,'..','lib','cpee','llm','implementation.rb'))
+  require_relative File.join(__dir__,'..','lib','cpee','llm','implementation')
+elsif File.exist?(File.join(Dir.home,'Projects','cpee-llm','lib','cpee','llm','implementation.rb'))
+  require_relative File.join(Dir.home, 'Projects','cpee-llm','lib','cpee','llm','implementation')
+else
+  require 'cpee/llm/implementation'
+end
+
+options = {
+  :host => 'localhost',
+  :port => 9297,
+  :secure => false,
+  :llms => {}
+}
+
+Riddl::Server.new(CPEE::LLM::SERVER, options) do
+  accessible_description true
+  cross_site_xhr true
+
+  @riddl_opts[:llms][:connectors].each do |k,v|
+    @riddl_opts[:llms][:connectors][k] = File.read(v)
+  end
+
+  use CPEE::LLM::implementation(@riddl_opts)
+end.loop!

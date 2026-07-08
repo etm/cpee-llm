@@ -1,0 +1,4 @@
+config.openai_api_key = 'insert your key here'
+config.openai_use_system_role = true
+
+RubyLLM.chat(model: myllm,provider: :openai,assume_model_exists: true)
