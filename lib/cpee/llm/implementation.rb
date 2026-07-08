@@ -12,36 +12,9 @@ module CPEE
 
     SERVER = File.expand_path(File.join(__dir__,'implementation.xml'))
 
-    def cpee_to_mermaid(cpee) #{{{
-      srv = Riddl::Client.new('http://localhost:9295/mermaid/cpee')
-      status, res = srv.post [
-        Riddl::Parameter::Complex.new("description","text/xml",cpee),
-        Riddl::Parameter::Simple.new("type","description")
-      ]
-      if status >= 200 && status < 300
-        res
-      else
-        raise 'error when converting cpee to mermaid'
-      end
-      return res[0].value().read()
-    end #}}}
-
-    def mermaid_to_cpee(mermaid) #{{{
-      srv = Riddl::Client.new('http://localhost:9295/cpee/mermaid')
-      status, res = srv.post [
-        Riddl::Parameter::Complex.new("description","text/plain",mermaid),
-        Riddl::Parameter::Simple.new("type","description")
-      ]
-      if status >= 200 && status < 300
-        res
-      else
-        raise 'error when converting mermaid to cpee'
-      end
-      return res[0].value().read()
-    end #}}}
-
     class CreateMermaid < Riddl::Implementation #{{{
       include Functions
+      include DataFlow
 
       def response
         llms = @a[0]

@@ -9,6 +9,35 @@ module CPEE
 
       include RubyLLM_Requests
 
+        def cpee_to_mermaid(cpee) #{{{
+          srv = Riddl::Client.new('http://localhost:9295/mermaid/cpee')
+          status, res = srv.post [
+            Riddl::Parameter::Complex.new("description","text/xml",cpee),
+            Riddl::Parameter::Simple.new("type","description")
+          ]
+          if status >= 200 && status < 300
+            res
+          else
+            raise 'error when converting cpee to mermaid'
+          end
+          return res[0].value().read()
+        end #}}}
+
+        def mermaid_to_cpee(mermaid) #{{{
+          srv = Riddl::Client.new('http://localhost:9295/cpee/mermaid')
+          status, res = srv.post [
+            Riddl::Parameter::Complex.new("description","text/plain",mermaid),
+            Riddl::Parameter::Simple.new("type","description")
+          ]
+          if status >= 200 && status < 300
+            res
+          else
+            raise 'error when converting mermaid to cpee'
+          end
+          return res[0].value().read()
+        end #}}}
+
+
       def generate_model(myllm,user_input,temperature,llms) #{{{
         begin
           llm_response = generate_mermaid_model(myllm,user_input,temperature,llms)
