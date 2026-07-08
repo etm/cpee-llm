@@ -44,26 +44,25 @@ class CreateMermaid < Riddl::Implementation #{{{
     temperature = @p.shift.value.read if @p[0]&.name == 'temperature'
 
     doc = XML::Smart.string(input_cpee)
-
+    pp temperature
     begin
       output_cpee = if prompt_type == 'generate_noendpoints'
-        pp "generate no"
         llm_response = generate_model(myllm,user_input,temperature)
         mermaid_to_cpee(llm_response)
       elsif prompt_type == 'generate_endpoints'
-        pp "generate end"
         # get endpoints (hardcoded for demo, in future separate step)
         llm_response = generate_endpoint_model(myllm, user_input, get_demo_endpoints())
         mermaid_to_cpee(llm_response)
       elsif prompt_type == 'adapt_noendpoints'
-        pp "adapt model"
         llm_response = adapt_model(myllm,doc,user_input)
         mermaid_to_cpee(llm_response)
       elsif prompt_type == 'adapt_endpoints'
-        pp "adapt_end"
         xml_endpoints = XML::Smart.string(endpoints)
         adapt_cpee_model(myllm,doc,user_input,xml_endpoints, get_demo_endpoints())
       end
+    rescue Exception => e
+      @status = 500
+      return Riddl::Parameter::Complex.new('llm_out', 'application/json', { error: e }.to_json)
     end
 
     return(Riddl::Parameter::Complex.new("llm_out","application/json",{:user_input => user_input, :used_llm => myllm, :input_cpee => input_cpee, :input_intermediate => doc.root().empty?() ? "" : cpee_to_mermaid(doc.to_s()), :output_intermediate => llm_response, :output_cpee => output_cpee, :status => "Success"}.to_json()))
@@ -144,11 +143,16 @@ class CreateDataFlow < Riddl::Implementation #{{{
       @status = 400
       return Riddl::Parameter::Complex.new("llm_out","application/json",{:error => e}.to_json())
     end
-    mermaid_model = cpee_to_mermaid(doc.to_s())
-    #get endpoints (hardcoded for demo, in future separate step)
-    endpoints_description = get_demo_endpoints()
-    #match tasks and endpoints
-    api_speck = get_matching_endpoints(doc,endpoints_description)
+    begin
+      mermaid_model = cpee_to_mermaid(doc.to_s())
+      #get endpoints (hardcoded for demo, in future separate step)
+      endpoints_description = get_demo_endpoints()
+      #match tasks and endpoints
+      api_speck = get_matching_endpoints(doc,endpoints_description)
+    rescue Exception => e
+      @status = 500
+      return Riddl::Parameter::Complex.new('llm_out', 'application/json', { error: e }.to_json)
+    end
 
     #generate data flow
     begin
@@ -156,7 +160,7 @@ class CreateDataFlow < Riddl::Implementation #{{{
     rescue LLMError => e
       pp e.http_response
       @status = e.http_response || 400
-      return Riddl::Parameter::Complex.new("generic_out","application/json",{:error => e.message}.to_json())
+      return Riddl::Parameter::Complex.new("llm_out","application/json",{:error => e.message}.to_json())
     end
 
     #integrate dataflow in cpee_model

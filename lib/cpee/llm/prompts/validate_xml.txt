@@ -13,7 +13,7 @@ Validation guidelines:
 * CPEE control-flow elements must be structurally valid.
 * References, attributes, and conditions must be syntactically correct.
 * Loops must be able to terminate.
-* Manipulation steps must contain valid code.
+* Manipulate steps must contain valid code.
 * Choice/alternative structures must be executable.
 * Remove redundant or invalid elements if they prevent execution.
 * Keep identifiers unchanged unless a conflict exists.

@@ -49,6 +49,7 @@ def generate_content(myllm,system_prompt,user_prompt,max_tokens,temperature) #{{
     raise LLMError.new("Selected LLM model does not exist or is not supported. Please, select another LLM model.", 400)
   end
   mykey.strip!
+  pp temperature
   chat = connect_llm(mykey,myllm)
   chat.with_instructions system_prompt
   chat.with_temperature(temperature)
@@ -79,7 +80,10 @@ def generate_json_content(myllm,system_prompt,user_prompt,max_tokens,temperature
     raise LLMError.new("Selected LLM model does not exist or is not supported. Please, select another LLM model.", 400)
   end
   mykey.strip!
+  pp "Here"
   chat = connect_llm(mykey,myllm)
+  pp "There"
+  pp temperature
 
   #set parameters
   chat.with_params(max_tokens: max_tokens,response_format:{type:'json_object'})
@@ -97,6 +101,8 @@ rescue Exception => e
 def generate_mermaid_model(llm, user_input, temperature = 0) #{{{
   max_tokens = 4000
   temperature = temperature.nil? ? 0.1 : temperature.to_f
+  pp "here"
+  pp temperature
   system_prompt = File.read(File.join(__dir__,"prompts/generate1.txt"))
   user_prompt = "Consider following process description: #{user_input}. Generate a BPMN model in Mermaid.js format."
   new_mermaid = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature)
