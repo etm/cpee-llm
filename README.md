@@ -18,7 +18,7 @@ vim cpee-llm.conf # only add the connect adapters you need
 vim connect_gemini # add your key
 vim connect_gpt # add your key
 vim connect_morpheus # add your key, and change url of you morpheus hosting
-# connect adapter can be added or deleted as you wish, see rubyllm config for
+# connect adapters can be added or deleted as you wish, see rubyllm for
 # possible config options. The myllm variable always contains the requested
 # model.
 ./cpee-llm start
@@ -30,7 +30,6 @@ see a set of sample connectors.
 # Supported LLMs
 
 We support all LLMs that https://rubyllm.org supports. Check it out.
-
 
 ---
 
