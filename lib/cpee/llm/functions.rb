@@ -169,10 +169,8 @@ module CPEE
             llm_response = inside.empty? ? llm_response : inside[0][1]
             #check if response is json:
             begin
-              pp "here"
               hash = JSON.parse(llm_response)
             rescue JSON::ParserError => e
-              pp "there"
               raise LLMError.new("Something went wrong and llm was not able to generate Json data flow: #{llm_response}", 500)
             end
             return llm_response

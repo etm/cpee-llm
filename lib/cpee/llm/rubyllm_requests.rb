@@ -92,8 +92,6 @@ module CPEE
       def generate_mermaid_model(llm, user_input, temperature, llms={}) #{{{
         max_tokens = 4000
         temperature = temperature.nil? ? 0.1 : temperature.to_f
-        pp "here"
-        pp temperature
         system_prompt = File.read(File.join(__dir__,"prompts/generate1.txt"))
         user_prompt = "Consider following process description: #{user_input}. Generate a BPMN model in Mermaid.js format."
         new_mermaid = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)

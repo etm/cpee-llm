@@ -41,7 +41,6 @@ module CPEE
         temperature = @p.shift.value.read if @p[0]&.name == 'temperature'
 
         doc = XML::Smart.string(input_cpee)
-        pp temperature
         begin
           output_cpee = if prompt_type == 'generate_noendpoints'
             llm_response = generate_model(myllm,user_input,temperature,llms)
@@ -64,7 +63,6 @@ module CPEE
 
         return(Riddl::Parameter::Complex.new("llm_out","application/json",{:user_input => user_input, :used_llm => myllm, :input_cpee => input_cpee, :input_intermediate => doc.root().empty?() ? "" : cpee_to_mermaid(doc.to_s()), :output_intermediate => llm_response, :output_cpee => output_cpee, :status => "Success"}.to_json()))
       rescue LLMError => e
-        pp 'here in error'
         @status = e&.http_response || 400
         return Riddl::Parameter::Complex.new("llm_out","application/json",{ :error => "#{prompt_type} #{e.message}"}.to_json())
       end
@@ -166,7 +164,6 @@ module CPEE
         begin
           dataflow = generate_dataflow(myllm,mermaid_model,api_speck,llms)
         rescue LLMError => e
-          pp e.http_response
           @status = e.http_response || 400
           return Riddl::Parameter::Complex.new("llm_out","application/json",{:error => e.message}.to_json())
         end

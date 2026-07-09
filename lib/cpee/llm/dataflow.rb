@@ -165,8 +165,6 @@ module CPEE
           end
         end
 
-        pp json_e
-        pp cpee_model
         # ==============================conditions (only alternative)=======================
         json_e['gateway_conditions'].each do |i, value|
           if i.end_with?("s")
