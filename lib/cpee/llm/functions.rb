@@ -16,6 +16,9 @@
 
 require_relative 'rubyllm_requests'
 require 'json'
+require 'cpee/transformation/transformer'
+require 'cpee/transformation/cpee'
+require 'cpee/transformation/mermaid'
 
 module CPEE
 
@@ -25,34 +28,22 @@ module CPEE
 
       include RubyLLM_Requests
 
-        def cpee_to_mermaid(cpee) #{{{
-          srv = Riddl::Client.new('http://localhost:9295/mermaid/cpee')
-          status, res = srv.post [
-            Riddl::Parameter::Complex.new("description","text/xml",cpee),
-            Riddl::Parameter::Simple.new("type","description")
-          ]
-          if status >= 200 && status < 300
-            res
-          else
-            raise 'error when converting cpee to mermaid'
-          end
-          return res[0].value().read()
-        end #}}}
+      def cpee_to_mermaid(cpee) #{{{
+        model = CPEE::Transformation::Source::CPEE.new(cpee)
+        trans = CPEE::Transformation::Transformer.new(model)
+        traces = trans.build_traces
+        tree = trans.build_tree(false)
+        trans.generate_model(CPEE::Transformation::Target::Mermaid)
+      end #}}}
+      def mermaid_to_cpee(mermaid) #{{{
+        model = CPEE::Transformation::Source::Mermaid.new(mermaid)
 
-        def mermaid_to_cpee(mermaid) #{{{
-          srv = Riddl::Client.new('http://localhost:9295/cpee/mermaid')
-          status, res = srv.post [
-            Riddl::Parameter::Complex.new("description","text/plain",mermaid),
-            Riddl::Parameter::Simple.new("type","description")
-          ]
-          if status >= 200 && status < 300
-            res
-          else
-            raise 'error when converting mermaid to cpee'
-          end
-          return res[0].value().read()
-        end #}}}
+        trans = CPEE::Transformation::Transformer.new(model)
+        traces = trans.build_traces
 
+        tree = trans.build_tree(false)
+        trans.generate_model(CPEE::Transformation::Target::CPEE)
+      end #}}}
 
       def generate_model(myllm,user_input,temperature,llms) #{{{
         begin

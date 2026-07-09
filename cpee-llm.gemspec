@@ -26,4 +26,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'typhoeus', '~> 1.4'
   s.add_runtime_dependency 'ruby_llm', '~> 1.15'
   s.add_runtime_dependency 'rag_embeddings', '~> 0'
+  s.add_runtime_dependency 'cpee-transformation', '~> 1.0'
 end
