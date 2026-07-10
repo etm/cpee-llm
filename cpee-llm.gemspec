@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name             = "cpee-llm"
-  s.version          = "1.0.4"
+  s.version          = "1.0.5"
   s.platform         = Gem::Platform::RUBY
   s.license          = "LGPL-3.0-or-later"
   s.summary          = "CPEE Conversational Agents"
@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.bindir           = 'tools'
   s.executables      = ['cpee-llm']
 
-  s.required_ruby_version = '>=3.2'
+  s.required_ruby_version = '>=3.2.0'
 
   s.authors          = ['Nataliia Klievtsova', 'Matthias Ehrendorfer', 'Juergen eTM Mangler']
 
