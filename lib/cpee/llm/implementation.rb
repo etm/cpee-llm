@@ -41,8 +41,9 @@ module CPEE
         temperature = @p.shift.value.read if @p[0]&.name == 'temperature'
 
         doc = XML::Smart.string(input_cpee)
+        pp prompt_type
         begin
-          output_cpee = if prompt_type == 'generate_noendpoints'
+          output_cpee = if prompt_type == 'generate_noendpoints' || prompt_type == 'generate_noendpoints_docdescription'
             llm_response = generate_model(myllm,user_input,temperature,llms)
             mermaid_to_cpee(llm_response)
           elsif prompt_type == 'generate_endpoints'
@@ -52,6 +53,8 @@ module CPEE
           elsif prompt_type == 'adapt_noendpoints'
             llm_response = adapt_model(myllm,doc,user_input,llms)
             mermaid_to_cpee(llm_response)
+          elsif prompt_type == 'adapt_noendpoints_docdescription'
+            adapt_doccpee_description(myllm,doc,user_input,llms)
           elsif prompt_type == 'adapt_endpoints'
             xml_endpoints = XML::Smart.string(endpoints)
             adapt_cpee_model(myllm,doc,user_input,xml_endpoints,get_demo_endpoints(),llms)
