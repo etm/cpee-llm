@@ -81,6 +81,32 @@ module CPEE
         end
       end #}}}
 
+      def adapt_doccpee_description(myllm,doc,user_input,llms) #{{{
+        input_cpee = doc.to_s()
+        begin
+          llm_response = adapt_docxml_description(myllm,user_input,input_cpee,llms)
+          # raise exceptions if response is empty for some reason
+          if llm_response.nil? || llm_response.empty?
+            raise LLMError.new("Something went wrong and your content was not generated!", 500)
+          else
+            llm_response = llm_response.strip
+            inside = llm_response.scan(/```(\w+)?\s*\n(.*?)\n```/m)
+            llm_response = inside.empty? ? llm_response : inside[0][1]
+            #check if response is xml:
+            begin
+              XML::Smart.string(llm_response)
+            rescue Nokogiri::XML::SyntaxError => e
+              raise LLMError.new("Something went wrong and llm was not able to generate valid xml model: #{llm_response}", 500)
+            end
+            return llm_response
+          end
+        rescue LLMError => e_llm
+          raise e_llm
+        rescue Exception => e
+          raise e
+        end
+      end #}}}
+
       def adapt_cpee_model(myllm,doc,user_input,existing_endpoints,endpoints,llms) #{{{
         testset = XML::Smart.string(<<~XML)
           <testset xmlns="http://cpee.org/ns/properties/2.0">

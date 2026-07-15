@@ -107,10 +107,19 @@ module CPEE
         return new_mermaid
       end #}}}
 
+      def adapt_docxml_description(llm, user_input, process_model, llms={}) #{{{
+        max_tokens = 20000
+        temperature = 0
+        system_prompt = File.read(File.join(__dir__,"prompts/adapt_docxml_description.txt"))
+        user_prompt = "Consider following process model: #{process_model}. Update this process model according to provided changes #{user_input}."
+        new_cpee = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
+        return new_cpee
+       end #}}}
+
       def adapt_xml_model(llm, user_input, process_model, api_specification, llms={}) #{{{
         max_tokens = 20000
         temperature = 0
-        system_prompt = File.read(File.join(__dir__,"prompts/adapt_xml.txt"))
+        system_prompt = File.read(File.join(__dir__,"prompts/adapt_xml_endpoints.txt"))
         user_prompt = "Consider following process model: #{process_model.to_s} and task specification #{api_specification} with endpoint data. Update this process model according to provided changes #{user_input}."
         new_cpee = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
         return new_cpee
