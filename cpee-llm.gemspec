@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name             = "cpee-llm"
-  s.version          = "1.0.5"
+  s.version          = "1.0.6"
   s.platform         = Gem::Platform::RUBY
   s.license          = "LGPL-3.0-or-later"
   s.summary          = "CPEE Conversational Agents"
@@ -26,5 +26,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'typhoeus', '~> 1.4'
   s.add_runtime_dependency 'ruby_llm', '~> 1.15'
   s.add_runtime_dependency 'rag_embeddings', '~> 0'
-  s.add_runtime_dependency 'cpee-transformation', '~> 1.0'
+  s.add_runtime_dependency 'cpee-transformation', '~> 1'
 end
