@@ -117,7 +117,7 @@ module CPEE
        end #}}}
 
       def adapt_xml_model(llm, user_input, process_model, api_specification, llms={}) #{{{
-        max_tokens = 20000
+        max_tokens = 15000
         temperature = 0
         system_prompt = File.read(File.join(__dir__,"prompts/adapt_xml_endpoints.txt"))
         user_prompt = "Consider following process model: #{process_model.to_s} and task specification #{api_specification} with endpoint data. Update this process model according to provided changes #{user_input}."
