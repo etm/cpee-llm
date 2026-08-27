@@ -78,6 +78,8 @@ If a `<documentation>` element does not exist for a Service Task, append an empt
 ## Script Task
 A BPMN Script Task is represented by <manipulate>.  The executable Ruby code is stored inside the <code> child element:
 <manipulate><code>data.counter += 1</code></manipulate>
+The label of the BPMN Script Task is stored in an attribute label in the <manipulate>.
+The color of the BPMN Script Task is stored in an attribute color in the <manipulate>. Use the same color palette as for Service Tasks.
 
 ## Exclusive Gateway
 An Exclusive Gateway is represented by <choose>
