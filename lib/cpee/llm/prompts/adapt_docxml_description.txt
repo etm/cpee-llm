@@ -27,7 +27,7 @@ The process model itself is contained entirely inside the <description> element.
 Sequential execution is represented by sibling XML elements appearing in order inside the same parent element.
 
 ## Service Task
-A BPMN Service Task is represented by a `<call>` element.
+A BPMN Service Task is represented by a `<call id="..." endpoint="...">` element.
 The following child elements may appear inside `<call>`:
 ├── parameters
 │   ├── label
@@ -76,31 +76,39 @@ If a `<documentation>` element does not exist for a Service Task, append an empt
   Do not create a new variable name when an existing output already contains the required data. Reuse the existing data. variable.
 
 ## Script Task
-A BPMN Script Task is represented by <manipulate>.  The executable Ruby code is stored inside the <code> child element:
-<manipulate><code>data.counter += 1</code></manipulate>
+A BPMN Script Task is represented by <manipulate id="..." label="..." color="...">.  The executable Ruby code is stored inside the <code> child element:
+<manipulate><code id="a1">data.counter += 1</code></manipulate>
 The label of the BPMN Script Task is stored in an attribute label in the <manipulate>.
 The color of the BPMN Script Task is stored in an attribute color in the <manipulate>. Use the same color palette as for Service Tasks.
 
 ## Exclusive Gateway
-An Exclusive Gateway is represented by <choose>
-Each outgoing branch is represented by <alternative> child.
+An Exclusive Gateway is represented by <choose eid="..." mode="exclusive">
+Each outgoing branch is represented by <alternative condition="..." eid="e.."> child.
 The branch condition is stored in the **condition attribute**.
-<alternative condition="data.temperature > 30">
+<alternative condition="data.temperature > 30" eid="e1">
 Conditions must be valid Ruby expressions.
-Default branch has no conditions. <otherwise eid="..."/>. eid is an id, similar like in alternative branches. All eids has to be ident.
+Default branch has no conditions. <otherwise eid="..."/>.
+
+## Inclusive Gateway
+The only differ from Inclusive Gateway by the attribute mode="inclusive".
 
 ## Loop
-A BPMN loop is represented by <loop>
-The loop condition is stored in the **condition attribute**. The loop execution mode is stored in the **mode attribute** (pre_test/post_test)
-<loop mode="pre_test" condition="data.counter < 10">
+A BPMN loop is represented by <loop eid="e.." mode="..." condition="...">
+The loop condition is stored in the **condition attribute**. The loop execution mode is stored in the **mode attribute**.
+pre_test is used for head controlled loops.
+post_test is used for tail controlled loops.
+<loop eid="e1" mode="pre_test" condition="data.counter < 10">
 Loop conditions must be valid Ruby expressions.
 
 ## Parallel Gateway
-Parallel execution is represented by <parallel>
-Each concurrent branch is represented by <parallel_branch>
+Parallel execution is represented by <parallel eid="e.." wait="-1" cancel="last">
+The attribute wait defines how many branches have to reach the cancel condition before other branches are considered invalid. A normal parallel has always wait="-1".
+The attribute cancel defines the cancel condition, i.e., if the wait rules are evaluated after a branch fully finishes (attribute cancel has the value "last"), or if the wait rules are evaluated after the first task of a branch finishes ((attribute cancel has the value "first").
+An event-based gateway (which is a special case of a parallel) has always wait="1" cancel="last".
+Each concurrent branch is represented by <parallel_branch eid="e..">
 
 ##Pause Task
-A pause is represented by a <stop> element.
+A pause is represented by a <stop id="a.."> element.
 A <stop> pauses the execution of the process (until it is manually resumed). It does not terminate the process.
 <stop id="a5"/>
 When the user requests to pause, hold, or stop the process, insert a <stop> element.
@@ -119,6 +127,8 @@ If multiple valid interpretations exist and the missing information affects the 
 
 # Important
 If user deletes a single task in a branch, remove task but leave the branch. Use default branch.
+eid attributes are IDs. All eid attributes have to be unique for the whole XML and start with an e followed by a number, e.g., "e1".
+id attributes are IDs. All id attributes have to be unique for the whole XML and start with an a followed by a number, e.g., "a1".
 
 # Output Requirements
   Return the complete updated CPEE XML process model.
