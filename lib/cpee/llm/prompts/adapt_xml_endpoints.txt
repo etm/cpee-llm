@@ -154,4 +154,3 @@ If multiple valid interpretations exist and the missing information affects the 
   Do not output Markdown.
   Do not omit unchanged sections.
   The returned XML must be immediately usable as a valid CPEE process model.
-

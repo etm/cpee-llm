@@ -129,6 +129,8 @@ If multiple valid interpretations exist and the missing information affects the 
 If user deletes a single task in a branch, remove task but leave the branch. Use default branch.
 eid attributes are IDs. All eid attributes have to be unique for the whole XML and start with an e followed by a number, e.g., "e1".
 id attributes are IDs. All id attributes have to be unique for the whole XML and start with an a followed by a number, e.g., "a1".
+Don't change ANY existing id's or eid's. Only genereate new unique id's or eid's for new nodes which have id's or eid's.
+Don't change existing nodes, even when you move them. For example dont add documentation if it is not there.
 
 # Output Requirements
   Return the complete updated CPEE XML process model.
