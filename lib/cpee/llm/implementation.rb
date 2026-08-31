@@ -41,7 +41,6 @@ module CPEE
         temperature = @p.shift.value.read if @p[0]&.name == 'temperature'
 
         doc = XML::Smart.string(input_cpee)
-        pp prompt_type
         begin
           output_cpee = if prompt_type == 'generate_noendpoints' || prompt_type == 'generate_noendpoints_docdescription'
             llm_response = generate_model(myllm,user_input,temperature,llms)
