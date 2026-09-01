@@ -63,7 +63,7 @@ module CPEE
           return Riddl::Parameter::Complex.new('llm_out', 'application/json', { error: e }.to_json)
         end
 
-        return(Riddl::Parameter::Complex.new("llm_out","application/json",{:user_input => user_input, :used_llm => myllm, :input_cpee => input_cpee, :input_intermediate => doc.root().empty?() ? "" : cpee_to_mermaid(doc.to_s()), :output_intermediate => llm_response, :output_cpee => output_cpee, :status => "Success"}.to_json()))
+        return Riddl::Parameter::Complex.new("llm_out","application/json",{:user_input => user_input, :used_llm => myllm, :input_cpee => input_cpee, :input_intermediate => doc.root().empty?() ? "" : cpee_to_mermaid(doc.to_s()), :output_intermediate => llm_response, :output_cpee => output_cpee, :status => "Success"}.to_json())
       rescue LLMError => e
         @status = e&.http_response || 400
         return Riddl::Parameter::Complex.new("llm_out","application/json",{ :error => "#{prompt_type} #{e.message}"}.to_json())

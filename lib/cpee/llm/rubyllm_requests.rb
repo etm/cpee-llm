@@ -51,141 +51,118 @@ module CPEE
         end
         return chat
       end #}}}
-
       def build_system_prompt(name) #{{{
-        sp = File.read(File.join(__dir__,"prompts",name))
-        sp.gsub!(/(^|\n)%%%([^\n]+)(\n|$)/) do |e|
+        sp = File.read(File.join(__dir__,"prompts","system",name))
+        sp.gsub!(/(^|\n)[\t ]*%%%([^\n]+)(\n|$)/) do |e|
           b = $1
           m = $2
           a = $3
-          if File.exist? File.join(__dir__,"prompts",m)
-            a + File.read(File.join(__dir__,"prompts",m)) + b
+          if File.exist? File.join(__dir__,"prompts","system",m)
+            "#{a}#{File.read(File.join(__dir__,"prompts","system",m))}#{b}"
           else
-            a + b
+            "#{a}#{b}"
           end
         end
         sp
       end #}}}
-
-      def generate_content(myllm, system_prompt, user_prompt, max_tokens, temperature, llms) #{{{
+      def build_user_prompt(name,opts) #{{{
+        sp = File.read(File.join(__dir__,"prompts","user",name))
+        sp.gsub!(/(^|\n)[\t ]*%%%([^\n]+)(\n|$)/) do |e|
+          b = $1
+          m = $2.to_sym
+          a = $3
+          if opts[m]
+            "#{a}#{opts[m]}#{b}"
+          else
+            "#{a}#{b}"
+          end
+        end
+        sp
+      end #}}}
+      def generate_content(myllm, system_prompt, user_prompt, max_tokens, temperature, llms, opts={}) #{{{
         chat = connect_llm(myllm,llms)
         chat.with_instructions system_prompt
         chat.with_temperature(temperature)
         if max_tokens != 0
           if myllm.include?("gemini")
-            chat.with_params(generationConfig:{maxOutputTokens: max_tokens})
+            opts[:generationConfig] = { maxOutputTokens: max_tokens }
           elsif myllm.include?("gpt")
+            opts[:max_completion_tokens] = max_tokens
             chat.with_params(max_completion_tokens: max_tokens)
           else
-            chat.with_params(max_tokens: max_tokens)
+            opts[:max_completion_tokens] = max_tokens
           end
         end
+        chat.with_params **opts
         response = chat.ask user_prompt
         return response.content
       rescue Faraday::TimeoutError => e
         raise LLMError.new(e.message, 504)
       rescue Exception => e
         raise LLMError.new(e.message, 500)
-       end #}}}
-
-      def generate_json_content(myllm,system_prompt,user_prompt,max_tokens,temperature,llms) #{{{
-        chat = connect_llm(myllm,llms)
-
-        #set parameters
-        chat.with_params(max_tokens: max_tokens,response_format:{type:'json_object'})
-        chat.with_instructions system_prompt
-        chat.with_temperature(temperature)
-        response = chat.ask user_prompt
-        #puts JSON.parse(response.content)
-        return response.content
-      rescue Faraday::TimeoutError => e
-        raise LLMError.new(e.message, 504)
-      rescue Exception => e
-        raise LLMError.new(e.message, 500)
-       end #}}}
+      end #}}}
 
       def generate_mermaid_model(llm, user_input, temperature, llms={}) #{{{
         max_tokens = 4000
         temperature = temperature.nil? ? 0.1 : temperature.to_f
         system_prompt = build_system_prompt("generate1.txt")
-        user_prompt = "Consider following process description: #{user_input}. Generate a BPMN model in Mermaid.js format."
-        new_mermaid = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-        return new_mermaid
+        user_prompt = build_user_prompt("process_description.txt", user_input:)
+        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
       end #}}}
-
       def adapt_mermaid_model(llm, user_input, process_model, llms={}) #{{{
         max_tokens = 4000
         temperature = 0
         system_prompt = build_system_prompt("apply.txt")
-        user_prompt = "Consider following process model: #{process_model}. Update this process model according to provided changes #{user_input}."
-        new_mermaid = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-        return new_mermaid
+        user_prompt = build_user_prompt("process_model_adapt.txt", user_input:, process_model:)
+        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
       end #}}}
-
       def adapt_docxml_description(llm, user_input, process_model, llms={}) #{{{
         max_tokens = 20000
         temperature = 0
         system_prompt = build_system_prompt("adapt_docxml_description.txt")
-        p system_prompt
-        user_prompt = "Consider following process model: #{process_model}. Update this process model according to provided changes #{user_input}."
-        new_cpee = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-        return new_cpee
+        user_prompt = build_user_prompt("process_model_adapt.txt", user_input:, process_model:)
+        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
        end #}}}
-
       def adapt_xml_model(llm, user_input, process_model, api_specification, llms={}) #{{{
         max_tokens = 15000
         temperature = 0
         system_prompt = build_system_prompt("adapt_xml_endpoints.txt")
-        user_prompt = "Consider following process model: #{process_model.to_s} and task specification #{api_specification} with endpoint data. Update this process model according to provided changes #{user_input}."
-        new_cpee = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-        return new_cpee
+        user_prompt = build_user_prompt("process_model_adapt_api.txt", user_input:, process_model:, api_specification:)
+        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
       end #}}}
-
       def generate_plain_text(llm, user_input, llms={}) #{{{
         max_tokens = 4000
         temperature = 0
         system_prompt = build_system_prompt("describe.txt")
-        user_prompt = "Consider following process process model: #{user_input}. Generate a text describing provided process description."
-        process_description = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-        return process_description
+        user_prompt = build_user_prompt("process_model_text.txt", user_input:)
+        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
+      end #}}}
+      def generate_dataflow_content(llm, mermaid_model, api_specification, llms={}) #{{{
+        max_tokens = 10000
+        temperature = 0.1
+        system_prompt = build_system_prompt("dataflow.txt")
+        user_prompt = build_user_prompt("dataflow.txt", mermaid_model:, api_specification:)
+        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
+      end #}}}
+      def generate_endpoint_mermaid_model(llm, user_input, endpoints, llms={}) #{{{
+        max_tokens = 4000
+        temperature = 0.1
+        system_prompt = build_system_prompt("generate_enpoints.txt")
+        user_prompt = build_user_prompt("process_description_endpoints.txt", user_input:, endpoints:)
+        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
+      end #}}}
+      def validate_xml_model(llm, cpee_model, llms={}) #{{{
+        max_tokens = 0
+        temperature = 0.1
+        system_prompt = build_system_prompt("validate_xml.txt")
+        user_prompt = build_user_prompt("cpee_repair.txt", cpee_model:)
+        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
       end #}}}
 
       def generate_generic_content(llm, user_input, system_prompt, json, temperature, llms={}) #{{{
         max_tokens = 20000
         temperature = temperature.nil? ? 0 : temperature.to_f
-        if json == 'true'
-          process_description = generate_json_content(llm,system_prompt,user_input,max_tokens,temperature,llms)
-        else
-          process_description = generate_content(llm,system_prompt,user_input,max_tokens,temperature,llms)
-        end
-        return process_description
-      end #}}}
-
-      def generate_dataflow_content(llm, mermaid_model, api_specification, llms={}) #{{{
-        max_tokens = 10000
-        temperature = 0.1
-        system_prompt = build_system_prompt("dataflow.txt")
-        user_prompt = "Given process mode #{mermaid_model} and task specification #{api_specification} with endpoint data, define the execution context and return a JSON specification."
-        dataflow = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-        return dataflow
-      end #}}}
-
-      def generate_endpoint_mermaid_model(llm, user_input, endpoints, llms={}) #{{{
-        max_tokens = 4000
-        temperature = 0.1
-        system_prompt = build_system_prompt("generate_enpoints.txt")
-        user_prompt = "Consider the following process description: #{user_input} and the provided endpoint list: #{endpoints}. Interpret the process description as business intent and generate an executable BPMN model in Mermaid.js format using only the available endpoint capabilities."
-        new_mermaid = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-        return new_mermaid
-      end #}}}
-
-      def validate_xml_model(llm, cpee_model, llms={}) #{{{
-        max_tokens = 0
-        temperature = 0.1
-        system_prompt = build_system_prompt("validate_xml.txt")
-        user_prompt = "Consider following CPEE XML promcess model created by autobpmn.ai: #{cpee_model}. Repair the model so that it becomes executable. Return only the repaired XML without any comments or markdown formatting."
-        repaired_cpee = generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-        return repaired_cpee
+        generate_content(llm,system_prompt,user_input,max_tokens,temperature,llms,json == 'true' ? { response_format: { type: 'json_object' } } : {})
       end #}}}
 
     end
