@@ -1,0 +1,5 @@
+Consider following CPEE XML promcess model created by autobpmn.ai:
+
+  %%%cpee_model
+
+Repair the model so that it becomes executable. Return only the repaired XML without any comments or markdown formatting.

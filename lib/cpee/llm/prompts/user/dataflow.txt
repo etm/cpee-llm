@@ -1,0 +1,9 @@
+Given process model:
+
+  %%%mermaid_model
+
+... and given a task specification with endpoint data:
+
+ %%%api_specification
+
+Define the execution context and return a JSON specification.

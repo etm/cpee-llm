@@ -1,0 +1,11 @@
+Consider following process model:
+
+  %%%process_model
+
+... and given a task specification with endpoint data:
+
+  %%%api_specification
+
+Update this process model according to provided changes:
+
+  %%%user_input

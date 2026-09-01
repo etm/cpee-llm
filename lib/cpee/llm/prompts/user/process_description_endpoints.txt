@@ -1,0 +1,9 @@
+Consider the following process description:
+
+  %%%user_input
+
+... and consider the the provided endpoint list:
+
+  %%%endpoints
+
+Interpret the process description as business intent and generate an executable BPMN model in Mermaid.js format using only the available endpoint capabilities.

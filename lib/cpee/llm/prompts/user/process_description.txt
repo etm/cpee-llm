@@ -1,0 +1,5 @@
+Consider following process description:
+
+  %%%user_input
+
+Generate a BPMN model in Mermaid.js format.

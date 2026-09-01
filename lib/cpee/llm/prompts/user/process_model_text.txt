@@ -1,0 +1,4 @@
+Consider following process process model:
+  %%%user_input
+
+Generate a text describing provided process description.
