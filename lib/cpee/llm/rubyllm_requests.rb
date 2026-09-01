@@ -51,6 +51,7 @@ module CPEE
         end
         return chat
       end #}}}
+
       def build_system_prompt(name) #{{{
         sp = File.read(File.join(__dir__,"prompts","system",name))
         sp.gsub!(/(^|\n)[\t ]*%%%([^\n]+)(\n|$)/) do |e|
@@ -65,6 +66,7 @@ module CPEE
         end
         sp
       end #}}}
+
       def build_user_prompt(name,opts) #{{{
         sp = File.read(File.join(__dir__,"prompts","user",name))
         sp.gsub!(/(^|\n)[\t ]*%%%([^\n]+)(\n|$)/) do |e|
@@ -79,7 +81,9 @@ module CPEE
         end
         sp
       end #}}}
+
       def generate_content(myllm, system_prompt, user_prompt, max_tokens, temperature, llms, opts={}) #{{{
+        temperature = temperature.nil? ? 0.1 : temperature.to_f
         chat = connect_llm(myllm,llms)
         chat.with_instructions system_prompt
         chat.with_temperature(temperature)
@@ -90,7 +94,7 @@ module CPEE
             opts[:max_completion_tokens] = max_tokens
             chat.with_params(max_completion_tokens: max_tokens)
           else
-            opts[:max_completion_tokens] = max_tokens
+            opts[:max_tokens] = max_tokens
           end
         end
         chat.with_params **opts
@@ -100,69 +104,6 @@ module CPEE
         raise LLMError.new(e.message, 504)
       rescue Exception => e
         raise LLMError.new(e.message, 500)
-      end #}}}
-
-      def generate_mermaid_model(llm, user_input, temperature, llms={}) #{{{
-        max_tokens = 4000
-        temperature = temperature.nil? ? 0.1 : temperature.to_f
-        system_prompt = build_system_prompt("generate1.txt")
-        user_prompt = build_user_prompt("process_description.txt", user_input:)
-        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-      end #}}}
-      def adapt_mermaid_model(llm, user_input, process_model, llms={}) #{{{
-        max_tokens = 4000
-        temperature = 0
-        system_prompt = build_system_prompt("apply.txt")
-        user_prompt = build_user_prompt("process_model_adapt.txt", user_input:, process_model:)
-        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-      end #}}}
-      def adapt_docxml_description(llm, user_input, process_model, llms={}) #{{{
-        max_tokens = 20000
-        temperature = 0
-        system_prompt = build_system_prompt("adapt_docxml_description.txt")
-        user_prompt = build_user_prompt("process_model_adapt.txt", user_input:, process_model:)
-        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-       end #}}}
-      def adapt_xml_model(llm, user_input, process_model, api_specification, llms={}) #{{{
-        max_tokens = 15000
-        temperature = 0
-        system_prompt = build_system_prompt("adapt_xml_endpoints.txt")
-        user_prompt = build_user_prompt("process_model_adapt_api.txt", user_input:, process_model:, api_specification:)
-        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-      end #}}}
-      def generate_plain_text(llm, user_input, llms={}) #{{{
-        max_tokens = 4000
-        temperature = 0
-        system_prompt = build_system_prompt("describe.txt")
-        user_prompt = build_user_prompt("process_model_text.txt", user_input:)
-        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-      end #}}}
-      def generate_dataflow_content(llm, mermaid_model, api_specification, llms={}) #{{{
-        max_tokens = 10000
-        temperature = 0.1
-        system_prompt = build_system_prompt("dataflow.txt")
-        user_prompt = build_user_prompt("dataflow.txt", mermaid_model:, api_specification:)
-        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-      end #}}}
-      def generate_endpoint_mermaid_model(llm, user_input, endpoints, llms={}) #{{{
-        max_tokens = 4000
-        temperature = 0.1
-        system_prompt = build_system_prompt("generate_enpoints.txt")
-        user_prompt = build_user_prompt("process_description_endpoints.txt", user_input:, endpoints:)
-        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-      end #}}}
-      def validate_xml_model(llm, cpee_model, llms={}) #{{{
-        max_tokens = 0
-        temperature = 0.1
-        system_prompt = build_system_prompt("validate_xml.txt")
-        user_prompt = build_user_prompt("cpee_repair.txt", cpee_model:)
-        generate_content(llm,system_prompt,user_prompt,max_tokens,temperature,llms)
-      end #}}}
-
-      def generate_generic_content(llm, user_input, system_prompt, json, temperature, llms={}) #{{{
-        max_tokens = 20000
-        temperature = temperature.nil? ? 0 : temperature.to_f
-        generate_content(llm,system_prompt,user_input,max_tokens,temperature,llms,json == 'true' ? { response_format: { type: 'json_object' } } : {})
       end #}}}
 
     end
