@@ -99,7 +99,6 @@ module CPEE
           end
         end
         opts.delete(:json)
-        pp opts
         chat.with_params **opts
         response = chat.ask user_prompt
         return response.content
