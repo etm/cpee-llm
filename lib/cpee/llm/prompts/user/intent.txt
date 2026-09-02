@@ -1,0 +1,12 @@
+Consider the following user input:
+
+  %%%user_input
+
+Consider the follwing list of plugins
+
+  %%%plugins
+
+If appropriate, select a plugin, and return its id as json, e.g., { 'id': 123 }.
+If a plugin is appropriate for a part of the text, replace the text with %%% and return it as part of the json, e.g., { "id": 123, "text": "Some text. %%%. Some more text." }.
+If nothing seems suitable return "null".
+If it seems like the text is just for creating a process model return "{}".

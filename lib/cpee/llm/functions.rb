@@ -240,7 +240,18 @@ module CPEE
           if response.nil? || response.empty?
             raise LLMError.new("Something went wrong and your content was not generated!", 500)
           else
-            JSON::parse(response)
+            result = JSON::parse(response)
+            result["text"] = "%%%" if result.is_a?(Hash) && !result.key?("text")
+            if result.is_a?(Hash) && result["id"]
+              plugin_list = JSON::parse(plugs)
+              plugin = plugin_list.find { |p| p["id"] == result["id"] }
+              if plugin
+                plugin.each do |k,v|
+                  result[k] = v unless k == "description"
+                end
+                result
+              end
+            end
           end
         end
       end #}}}

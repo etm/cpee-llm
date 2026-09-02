@@ -1,0 +1,32 @@
+Normally the input of a user is used to create or edit a process model.
+Typically this entails adding, deleting or moving tasks, setting parameters for
+tasks, or creating a model for a certain domain or topic.
+
+Additionally the input, or parts of the input can be passed to a plugin.
+Plugins are defined as json, e.g.:
+
+{ "id": 1, "priority": 2, "url": "https://cpee.org/llm/plugins/aaa", "description": "Description what the plugin does", ... }
+
+If one of the plugins is matchin (according to its description), return its id
+as json { 'id': 12345}. \ If multiple plugins match, choose the one with the
+lowest priority. If one the plugins is only partially suitable, remove that
+part of the text that the plugin requires as input, and replace it with %%%.
+Write the text into a key "input". Replacing the whole input with %%% is fine.
+Replacing a part is also fine, depending on the user input.
+
+For example with the plugin:
+
+{ "id": 1, "url": "https://cpee.org/llm/plugins/aaa", "description": "Extracts a color value from a color name."  }
+
+And the user input:
+
+"Change the process model to occarina blue."
+
+Return the following:
+
+{ "id": 1, "input": "Change the process model to %%%." }
+
+If the description tells that it returns multiple names values, and enumerates
+them, output should look like this:
+
+{ "id": 12345, "input": "create a process model with %%%tasks %%%endpoints" }

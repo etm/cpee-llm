@@ -221,13 +221,6 @@ module CPEE
           return Riddl::Parameter::Complex.new("user_intent","application/json",{:error => e.message}.to_json())
         end
 
-        // go through all plugins
-        // select the correct one with id from repsonse
-        // move all attributes except description to to response
-        // if there is no text insert a key text with value "%%%"
-
-        pp response
-
         Riddl::Parameter::Complex.new("user_intent","application/json",response.to_json())
       end
     end #}}}
