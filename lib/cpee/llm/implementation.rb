@@ -204,29 +204,61 @@ module CPEE
       end
     end #}}}
 
+    class GuessIntent < Riddl::Implementation #{{{
+      include Functions
+
+      def response
+        llms = @a[0]
+        plugins = @a[1]
+
+        input_cpee = @p[0].value.read
+        myllm = @p[1].value.read
+
+        begin
+          response = guess_intent(myllm,input_cpee,plugins,llms)
+        rescue LLMError => e
+          @status = e.http_response
+          return Riddl::Parameter::Complex.new("user_intent","application/json",{:error => e.message}.to_json())
+        end
+
+        // go through all plugins
+        // select the correct one with id from repsonse
+        // move all attributes except description to to response
+        // if there is no text insert a key text with value "%%%"
+
+        pp response
+
+        Riddl::Parameter::Complex.new("user_intent","application/json",response.to_json())
+      end
+    end #}}}
+
     def self::implementation(opts)
       Proc.new do
         on resource do
-          run(CreateMermaid, opts[:llms]) if post 'llm_in'
+          run CreateMermaid, opts[:llms] if post 'llm_in'
 
           on resource 'dataflow' do
-            run(CreateDataFlow, opts[:llms]) if post 'dataflow_in'
+            run CreateDataFlow, opts[:llms] if post 'dataflow_in'
           end
 
           on resource 'validate' do
             on resource 'xml' do
-              run(ValidateDataFlow, opts[:llms]) if post 'dataflow_in'
+              run ValidateDataFlow, opts[:llms] if post 'dataflow_in'
             end
           end
 
           on resource 'text' do
             on resource 'llm' do
-              run(CreateText, opts[:llms]) if post 'text_in'
+              run CreateText, opts[:llms] if post 'text_in'
             end
           end
 
+          on resource 'intent' do
+            run GuessIntent, opts[:llms], opts[:plugins] if post 'intent_in'
+          end
+
           on resource 'generic' do
-            run(CreateGeneric, opts[:llms]) if post 'generic_in'
+            run CreateGeneric, opts[:llms] if post 'generic_in'
           end
         end
       end

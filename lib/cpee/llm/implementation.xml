@@ -35,9 +35,35 @@
     <parameter name="rpst_xml" mimetype="application/json"/>
   </message>
 
+  <message name="intent_in">
+    <parameter name="user_input" mimetype="text/plain"/>
+    <parameter name="llm" mimetype="text/plain"/>
+  </message>
+
+  <message name="intent_out">
+    <parameter name="user_intent" mimetype="application/json"/>
+    <!--
+      prompt/user/intent.txt
+      prompt/system/intent.txt
+
+      output: json
+      {
+        url: // url to call
+        required_input: {
+          text: // typically extracted from user_input
+          documents: { name: value, }, // documents to pass
+          model: true|false,
+          message_id: '' // input is then the message
+        }
+        output_template: ... // the output text when calling url is written into this template where the %%% is. If the output of calling url is a json, insert multiple %%%name.
+        output: 'chat|process|reintent' // write to chat, give to the normal pipeline, or pass the output to the intention service again
+      }
+    -->
+  </message>
+
   <message name="text_in">
     <parameter name="rpst_xml" mimetype="*/xml"/>
-    <parameter name="llm" type="string"/>
+    <parameter name="llm" mimetype="text/plain"/>
   </message>
   <message name="text_out">
     <parameter name="output_text" mimetype="application/json"/>
@@ -66,6 +92,10 @@
 
     <resource relative="dataflow">
       <post in="dataflow_in" out="llm_out"/>
+    </resource>
+
+    <resource relative="intent">
+      <post in="intent_in" out="intent_out"/>
     </resource>
 
     <resource relative="text">

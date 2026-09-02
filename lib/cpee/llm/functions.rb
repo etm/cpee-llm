@@ -158,7 +158,7 @@ module CPEE
 
       def generate_generic(myllm,user_input,system_prompt,format,temperature,llms) #{{{
         error_handler do
-          llm_response = generate_content(myllm, system_prompt, user_input, 20000, temperature, llms, format == 'true' ? { response_format: { type: 'json_object' } } : {})
+          llm_response = generate_content(myllm, system_prompt, user_input, 20000, temperature, llms, format == 'true' ? { json: true } : {})
           # raise exceptions if response is empty for some reason
           if llm_response.nil? || llm_response.empty?
             raise LLMError.new("Something went wrong and your content was not generated!", 500)
@@ -172,7 +172,7 @@ module CPEE
         error_handler do
           system_prompt = build_system_prompt("dataflow.txt")
           user_prompt = build_user_prompt("dataflow.txt", mermaid_model:, api_specification:)
-          llm_response = generate_content(myllm, system_prompt, user_prompt, 10000, 0.1, llms)
+          llm_response = generate_content(myllm, system_prompt, user_prompt, 4000, 0.1, llms)
           # raise exceptions if response is empty for some reason
           if llm_response.nil? || llm_response.empty?
             raise LLMError.new("Something went wrong and your content was not generated!", 500)
@@ -227,6 +227,20 @@ module CPEE
               raise LLMError.new("Something went wrong and llm was not able to generate valid xml model", llm_response)
             end
             return llm_response
+          end
+        end
+      end #}}}
+
+      def guess_intent(myllm,user_input,plugins,llms) #{{{
+        plugs = File.read(plugins)
+        error_handler do
+          system_prompt = build_system_prompt("intent.txt")
+          user_prompt = build_user_prompt("intent.txt", user_input:, plugins: plugs)
+          response = generate_content(myllm,system_prompt,user_prompt,4000,0.1,llms,{ json: true })
+          if response.nil? || response.empty?
+            raise LLMError.new("Something went wrong and your content was not generated!", 500)
+          else
+            JSON::parse(response)
           end
         end
       end #}}}

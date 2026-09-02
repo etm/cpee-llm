@@ -90,13 +90,16 @@ module CPEE
         if max_tokens != 0
           if myllm.include?("gemini")
             opts[:generationConfig] = { maxOutputTokens: max_tokens }
+            opts[:generationConfig].merge!(response_mime_type: 'application/json') if opts[:json]
           elsif myllm.include?("gpt")
             opts[:max_completion_tokens] = max_tokens
-            chat.with_params(max_completion_tokens: max_tokens)
+            opts[:response_format] = { type: "json_object" } if opts[:json]
           else
             opts[:max_tokens] = max_tokens
           end
         end
+        opts.delete(:json)
+        pp opts
         chat.with_params **opts
         response = chat.ask user_prompt
         return response.content
