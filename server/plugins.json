@@ -24,7 +24,7 @@
   {
     "id": 2,
     "priority": 2,
-    "url": "https://echo.bpm.in.tum.de/services/llm/document/",
+    "url": "https://echo.bpm.in.tum.de/services/llm/document/?out=chat",
     "description": "Analyse a document. Url must be given. Output the textual description to the chat.",
     "required_input": [
       "documents"
@@ -35,7 +35,7 @@
   {
     "id": 3,
     "priority": 2,
-    "url": "https://echo.bpm.in.tum.de/services/llm/document/",
+    "url": "https://echo.bpm.in.tum.de/services/llm/document/?out=pipe",
     "description": "Analyse a document. Url must be given. Integrate the results into the process description.",
     "required_input": [
       "documents"
