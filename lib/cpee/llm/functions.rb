@@ -156,9 +156,9 @@ module CPEE
         end
       end #}}}
 
-      def generate_generic(myllm,user_input,system_prompt,format,temperature,llms) #{{{
+      def generate_generic(myllm,user_input,system_prompt,format,temperature,documents,llms) #{{{
         error_handler do
-          llm_response = generate_content(myllm, system_prompt, user_input, 20000, temperature, llms, format == 'true' ? { json: true } : {})
+          llm_response = generate_content(myllm, system_prompt, user_input, 20000, temperature, llms, format == 'true' ? { json: true } : {}, documents)
           # raise exceptions if response is empty for some reason
           if llm_response.nil? || llm_response.empty?
             raise LLMError.new("Something went wrong and your content was not generated!", 500)

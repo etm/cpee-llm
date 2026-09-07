@@ -82,7 +82,7 @@ module CPEE
         sp
       end #}}}
 
-      def generate_content(myllm, system_prompt, user_prompt, max_tokens, temperature, llms, opts={}) #{{{
+      def generate_content(myllm, system_prompt, user_prompt, max_tokens, temperature, llms, opts={}, documents=[]) #{{{
         temperature = temperature.nil? ? 0.1 : temperature.to_f
         chat = connect_llm(myllm,llms)
         chat.with_instructions system_prompt
@@ -100,7 +100,9 @@ module CPEE
         end
         opts.delete(:json)
         chat.with_params **opts
-        response = chat.ask user_prompt
+        message = RubyLLM::Content.new(user_prompt)
+        documents.each { |doc| message.add_attachment(doc.value, filename: doc.filename) }
+        response = chat.ask message
         return response.content
       rescue Faraday::TimeoutError => e
         raise LLMError.new(e.message, 504)

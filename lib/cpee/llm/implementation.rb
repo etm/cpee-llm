@@ -114,18 +114,20 @@ module CPEE
         llms = @a[0]
         #get parameters
         begin
-          myllm = @p[0].value.read
-          user_input = @p[1].value.read
-          system_prompt = @p[2].value.read
-          format = @p[3].value.read
-          temperature = @p[4]&.value&.read
+          myllm         = @p.shift.value.read
+          user_input    = @p.shift.value.read
+          system_prompt = @p.shift.value.read
+          format        = @p.shift.value.read
+          temperature   = @p.shift.value.read if @p[0]&.name == 'temperature'
+          documents     = []
+          documents << @p.shift while @p[0]&.name == 'documents'
         rescue Exception => e
           @status = 400
           return Riddl::Parameter::Complex.new("generic_out","application/json",{:error => e}.to_json())
         end
 
         begin
-          llm_response = generate_generic(myllm,user_input,system_prompt,format,temperature,llms)
+          llm_response = generate_generic(myllm,user_input,system_prompt,format,temperature,documents,llms)
         rescue LLMError => e
           @status = e.http_response
           return Riddl::Parameter::Complex.new("generic_out","application/json",{:error => e.message}.to_json())

@@ -77,6 +77,9 @@
     <optional>
       <parameter name="temperature" mimetype="text/plain"/>
     </optional>
+    <zeroOrMore>
+      <parameter name="documents" mimetype="*/*"/>
+    </zeroOrMore>
   </message>
   <message name="generic_out">
     <parameter name="output_text" mimetype="application/json"/>

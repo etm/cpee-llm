@@ -152,6 +152,7 @@ Performs arbitrary LLM tasks using a system prompt and user input.
 | system_prompt | text/plain |
 | format | text/plain (`true`/`false`) |
 | temperature | text/plain (optional) |
+| documents | `*/*` (optional, repeatable) |
 
 ## Response
 
@@ -168,6 +169,7 @@ Performs arbitrary LLM tasks using a system prompt and user input.
 ### Notes
 
 - `format=true` requests JSON output (guarantees valid JSON but not any specific structure).
+- `documents` can be repeated to attach one or more files (e.g. images, PDFs, office documents, plain text) to the request, sent as multipart file parts. Attachments are passed through to the LLM alongside `user_input`; support depends on the selected model/provider.
 
 List of supporteb providers: https://rubyllm.com/chat/#getting-structured-output
 
@@ -180,6 +182,19 @@ curl -X POST https://cpee.org/llm/generic/ \
   -F "user_input=The MPON sends the dismissal to the MPOO.;type=text/plain" \
   -F "system_prompt=Return the list of tasks.;type=text/plain" \
   -F "format=false;type=text/plain"
+```
+
+With attached documents:
+
+```bash
+curl -X POST https://cpee.org/llm/generic/ \
+  -H 'Content-Type:multipart/form-data' \
+  -F "llm=gemini-2.5-flash-lite;type=text/plain" \
+  -F "user_input=Summarize the attached document.;type=text/plain" \
+  -F "system_prompt=Return the summary as bullet points.;type=text/plain" \
+  -F "format=false;type=text/plain" \
+  -F "documents=@report.pdf;type=application/pdf" \
+  -F "documents=@chart.png;type=image/png"
 ```
 
 ---
