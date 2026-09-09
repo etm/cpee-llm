@@ -27,7 +27,7 @@ require 'typhoeus'
 # ./cpee-llm-tool.rb adapt 'Add task A after dismissal review.' 'geminin-2.0-flash' 1501
 
 
-srv = Riddl::Client.new('http://localhost:9297/')
+srv = Riddl::Client.new('http://localhost:9305/')
 status, res = srv.post [
   Riddl::Parameter::Complex.new("rpst_xml","text/xml",ARGV[0] == 'adapt' ? Typhoeus.get("https://cpee.org/flow/engine/#{ARGV[2]}/properties/dslx/").response_body() : File.read('cpee_empty_example')),
   Riddl::Parameter::Complex.new("user_input","text/plain",ARGV[1]),

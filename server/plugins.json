@@ -2,7 +2,7 @@
   {
     "id": 1,
     "priority": 1,
-    "url": "https://echo.bpm.in.tum.de/services/llm/document_name/?out=chat",
+    "url": "https://echo.bpm.in.tum.de/services/llm/document_name/",
     "description": "Check if a certain document exists and extract its url. Output to result to the chat.",
     "required_input": [
       "document_names"
@@ -13,7 +13,7 @@
   {
     "id": 1,
     "priority": 1,
-    "url": "https://echo.bpm.in.tum.de/services/llm/document_name/?out=reintent",
+    "url": "https://echo.bpm.in.tum.de/services/llm/document_name/",
     "description": "Check if a certain document exists and extract its url. Insert the result into the text for further subsequent plugin selections to pick up.",
     "required_input": [
       "document_names"
@@ -24,7 +24,7 @@
   {
     "id": 2,
     "priority": 2,
-    "url": "https://echo.bpm.in.tum.de/services/llm/document/?out=chat",
+    "url": "https://echo.bpm.in.tum.de/services/llm/document/",
     "description": "Analyse a document. Url must be given. Output the textual description to the chat.",
     "required_input": [
       "documents"
@@ -35,7 +35,7 @@
   {
     "id": 3,
     "priority": 2,
-    "url": "https://echo.bpm.in.tum.de/services/llm/document/?out=pipe",
+    "url": "https://echo.bpm.in.tum.de/services/llm/document/",
     "description": "Analyse a document. Url must be given. Integrate the results into the process description.",
     "required_input": [
       "documents"
