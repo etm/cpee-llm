@@ -78,7 +78,7 @@
       <parameter name="temperature" mimetype="text/plain"/>
     </optional>
     <zeroOrMore>
-      <parameter name="documents" mimetype="*/*"/>
+      <parameter name="document" mimetype="*"/>
     </zeroOrMore>
   </message>
   <message name="generic_out">

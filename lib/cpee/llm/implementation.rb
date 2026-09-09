@@ -120,7 +120,7 @@ module CPEE
           format        = @p.shift.value.read
           temperature   = @p.shift.value.read if @p[0]&.name == 'temperature'
           documents     = []
-          documents << @p.shift while @p[0]&.name == 'documents'
+          documents << @p.shift while @p[0]&.name == 'document'
         rescue Exception => e
           @status = 400
           return Riddl::Parameter::Complex.new("generic_out","application/json",{:error => e}.to_json())
