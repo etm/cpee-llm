@@ -35,19 +35,19 @@ module CPEE
 
       def connect_llm(myllm,llms) #{{{
         chat = nil
-        RubyLLM.configure do |config|
-          config.request_timeout = llms[:request_timeout]
-          config.max_retries = llms[:max_retries]
+        context = RubyLLM.context
+        config = context.config
+        config.request_timeout = llms[:request_timeout]
+        config.max_retries = llms[:max_retries]
 
-          llms[:connectors].each do |k,v|
-            if myllm =~ /#{k}/ && chat.nil?
-              chat = eval(v)
-            end
+        llms[:connectors].each do |k,v|
+          if myllm =~ /#{k}/ && chat.nil?
+            chat = eval(v)
           end
+        end
 
-          if chat.nil?
-            raise LLMError.new("Selected LLM model does not exist or is not supported. Please, select another LLM model.",  400)
-          end
+        if chat.nil?
+          raise LLMError.new("Selected LLM model does not exist or is not supported. Please, select another LLM model.",  400)
         end
         return chat
       end #}}}
