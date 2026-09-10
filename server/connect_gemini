@@ -1,3 +1,3 @@
 config.gemini_api_key = 'insert your key here'
 
-RubyLLM.chat(model: myllm)
+context.chat(model: myllm)
