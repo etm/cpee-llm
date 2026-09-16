@@ -5,7 +5,7 @@
     "url": "https://echo.bpm.in.tum.de/services/llm/document_name/",
     "description": "Check if a certain document exists and extract its url. Output to result to the chat.",
     "required_input": [
-      "document_names"
+      "documents"
     ],
     "output_template": "The url of the document is %%%.",
     "output": "chat"
@@ -16,7 +16,7 @@
     "url": "https://echo.bpm.in.tum.de/services/llm/document_name/",
     "description": "Check if a certain document exists and extract its url. Insert the result into the text for further subsequent plugin selections to pick up.",
     "required_input": [
-      "document_names"
+      "documents"
     ],
     "output_template": "%%%",
     "output": "reintent"

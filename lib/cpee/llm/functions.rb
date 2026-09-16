@@ -241,7 +241,6 @@ module CPEE
             raise LLMError.new("Something went wrong and your content was not generated!", 500)
           else
             result = JSON::parse(response)
-            result["text"] = "%%%" if result.is_a?(Hash) && !result.key?("text")
             if result.is_a?(Hash) && result["id"]
               plugin_list = JSON::parse(plugs)
               plugin = plugin_list.find { |p| p["id"] == result["id"] }
@@ -250,7 +249,11 @@ module CPEE
                   result[k] = v unless k == "description"
                 end
                 result
+              else
+                nil
               end
+            else
+              result
             end
           end
         end

@@ -30,3 +30,16 @@ If the description tells that it returns multiple names values, and enumerates
 them, output should look like this:
 
 { "id": 12345, "input": "create a process model with %%%tasks %%%endpoints" }
+
+A plugin's description may refer to a general category of thing (a document, a
+color, a value, ...) rather than one specific named instance. A vague or
+generic reference to that category in the user input (e.g. "the document",
+"that file", "some color") still counts as a match for the plugin - the user
+does not have to name the specific instance.
+
+If the input contains several clauses, evaluate each clause against every
+plugin's description separately, don't just judge the input as a whole. One
+clause can match a plugin while the rest of the input is unrelated process
+model editing; use the %%% substitution rule above for that clause and leave
+the rest of the text as is. Only return "{}" once no plugin's description
+matches any clause in the input.

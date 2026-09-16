@@ -17,6 +17,8 @@
 require 'ruby_llm'
 require 'typhoeus'
 require 'json'
+require 'mime/types'
+require 'securerandom'
 
 module CPEE
 
@@ -101,7 +103,15 @@ module CPEE
         opts.delete(:json)
         chat.with_params **opts
         message = RubyLLM::Content.new(user_prompt)
-        documents.each { |doc| message.add_attachment(doc.value, filename: doc.filename) }
+        documents.each do |doc|
+          filename = doc.filename
+          if (filename.nil? || filename.empty?) && !doc.mimetype.to_s.empty?
+            extension = MIME::Types[doc.mimetype].first&.extensions&.first
+            filename = SecureRandom.hex(8)
+            filename += ".#{extension}" if extension
+          end
+          message.add_attachment(doc.value, filename:)
+        end
         response = chat.ask message
         return response.content
       rescue Faraday::TimeoutError => e
