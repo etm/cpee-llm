@@ -2,52 +2,46 @@
   {
     "id": 1,
     "priority": 1,
-    "url": "https://echo.bpm.in.tum.de/services/llm/document_name/",
-    "description": "Check if a certain document exists and extract its url. Output to result to the chat.",
+    "url": "https://echo.bpm.in.tum.de/services/llm/dnames/",
+    "description": "Use ONLY when the user wants to know whether a document exists or where it is, and plans no further operation on it (e.g. 'does the spec document exist', 'where is the process document'). A vague or generic reference (e.g. 'the process document', 'that file') still counts as a document reference, it does not need to be a specific file name. Looks up the document, extracts its url, and outputs the result directly to chat. If the input hints at any further operation on the document (analyse, extract, look at, summarize, use it to build or modify a process model, ...), do NOT use this plugin - use plugin id 2 instead.",
     "required_input": [
       "documents"
     ],
-    "output_template": "The url of the document is %%%.",
     "output": "chat"
-  },
-  {
-    "id": 1,
-    "priority": 1,
-    "url": "https://echo.bpm.in.tum.de/services/llm/document_name/",
-    "description": "Check if a certain document exists and extract its url. Insert the result into the text for further subsequent plugin selections to pick up.",
-    "required_input": [
-      "documents"
-    ],
-    "output_template": "%%%",
-    "output": "reintent"
   },
   {
     "id": 2,
-    "priority": 2,
-    "url": "https://echo.bpm.in.tum.de/services/llm/document/",
-    "description": "Analyse a document. Url must be given. Output the textual description to the chat.",
+    "priority": 1,
+    "url": "https://echo.bpm.in.tum.de/services/llm/dnames/",
+    "description": "Use when the user wants to look up a document AND then do something further with it (analyse it, extract from it, use it to create or modify a process model, ...), e.g. 'analyse the process document and create a process from it'. A vague or generic reference (e.g. 'the process document', 'that file') still counts as a document reference, it does not need to be a specific file name. Looks up the document, extracts its url, and inserts the result back into the text so a subsequent plugin selection pass can pick up from there. If the input hints at NO further operation on the document, do NOT use this plugin - use plugin id 1 instead.",
     "required_input": [
       "documents"
     ],
-    "output_template": "%%%",
-    "output": "chat"
+    "output": "reintent"
   },
   {
     "id": 3,
     "priority": 2,
-    "url": "https://echo.bpm.in.tum.de/services/llm/document/",
-    "description": "Analyse a document. Url must be given. Integrate the results into the process description.",
-    "required_input": [
-      "documents"
-    ],
+    "url": "https://echo.bpm.in.tum.de/services/llm/documents/",
+    "description": "Use ONLY when a document url is already given in the input (not a symbolic/vague document name - if only a name is given, use plugin id 2 to resolve it to a url first) AND the user just wants the document's content described or extracted, with no explicit intention to use the result to build or change the process model. Analyses, extracts from, or otherwise works on the document at the given url and outputs the textual result to chat. If the input explicitly signifies that the result should feed into creating or modifying the process model (e.g. 'and create a process from it', 'and modify the model with the result', 'add it to the model'), do NOT use this plugin - use plugin id 4 instead.",
+    "required_input": [],
     "output_template": "%%%",
-    "output": "pipe"
+    "output": "chat"
   },
   {
     "id": 4,
     "priority": 2,
+    "url": "https://echo.bpm.in.tum.de/services/llm/documents/",
+    "description": "Use when a document url is already given in the input (not a symbolic/vague document name - if only a name is given, use plugin id 2 to resolve it to a url first) AND the input explicitly signifies that the result should feed into creating or modifying the process model, e.g. 'and create a process from it', 'and build a model from it', 'and modify the models with the result', or 'add it to the model'. Analyses, extracts from, or otherwise works on the document at the given url and feeds the textual result back into the pipeline so it is used to create or modify the process model. If the input has no such explicit intention to affect the model, do NOT use this plugin - use plugin id 3 instead.",
+    "required_input": [],
+    "output_template": "%%%",
+    "output": "pipe"
+  },
+  {
+    "id": 5,
+    "priority": 2,
     "url": "https://echo.bpm.in.tum.de/services/llm/stats/",
-    "description": "Answer a questions about the process model.",
+    "description": "Answer a questions about the process model. This should relate to tasks, gateways or events, or any information contained in them. It can also relate to quantitative properties of the process, e.g. 'how many tasks'.",
     "required_input": [
       "model"
     ],
