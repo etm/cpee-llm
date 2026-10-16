@@ -64,6 +64,7 @@ If the task does not exist in the Service Registry:
 - Leave the task unconfigured except for information explicitly requested by the user.
 Always use the Service Registry whenever a matching service specification is available.
 
+The CPEE XML model must follow these rules:
 %%%cpee_xml.txt
 
 # Handling Ambiguity

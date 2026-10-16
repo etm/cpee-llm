@@ -38,20 +38,29 @@ Use only the following color palette:
 The <method> field must strictly follow the Service Registry specification.
 If the service specification defines a method, use exactly that value. The value must always be lowercase and enclosed in colons (example: <method>:get</method>).
 Never invent, infer, or assume a method value that is not explicitly defined in the service specification:
-<method/>
+<parameters>
+  <method/>
+</parameters>
 
-Service input parameters are stored inside arguments. Each argument is represented by its own child element.
-<arguments>
-    <min>1</min>
-    <max>100</max>
-</arguments>
+Service input parameters are stored inside arguments (which in term are
+alwaysstored inside parameters, see structure above). Each argument is
+represented by its own child element.
+<parameters>
+  <arguments>
+      <min>1</min>
+      <max>100</max>
+  </arguments>
+</parameters>
 If an argument depends on a previously computed or returned value, it must be provided using the !data.some_value syntax.
-<arguments>
-    <step>!data.current_step</step>
-</arguments>
+<parameters>
+  <arguments>
+      <step>!data.current_step</step>
+  </arguments>
+</parameters>
 
-Returned service values are processed inside finalize: <finalize output="result">, where result is the variable containing the service response. Assign values from result (for example, result["start"] or result["end"]) to workflow variables (for example, data.start or data.end) to store them for later use in the process.
-<finalize output="result"> data.temperature = result["temperature"].to_f; data.type = result["celsius"];</finalize>
+Returned service values are processed inside <finalize output="result">, where result is the variable containing the service response.
+result can be a single value or an object. Inside <finalize>, assign result directly (<finalize output="result"> data.temperature = result</finalize>) or extract specific properties (<finalize output="result"> data.temperature = result["temperature"].to_f; data.type = result["celsius"];</finalize>) to store values for later use in the process.
+
 
 ## Script TaskA BPMN Script Task is represented by <manipulate id="..." label="..." color="...">.  The executable Ruby code is stored inside the <code> child element:
 <manipulate><code id="a1">data.counter += 1</code></manipulate>
