@@ -1,0 +1,5 @@
+## Script Task
+A BPMN Script Task is represented by <manipulate id="..." label="..." color="...">.  The executable Ruby code is stored inside the <code> child element:
+<manipulate id="a1" label="Increase Counter"><code>data.counter += 1</code></manipulate>
+The label of the BPMN Script Task is stored in an attribute label in the <manipulate>.
+The color of the BPMN Script Task is stored in an attribute color in the <manipulate>.

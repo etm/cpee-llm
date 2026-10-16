@@ -1,0 +1,4 @@
+##Pause Task
+A pause is represented by a <stop id="a.."> element.
+A <stop> pauses the execution of the process (until it is manually resumed). It does not terminate the process.
+<stop id="a5"/>

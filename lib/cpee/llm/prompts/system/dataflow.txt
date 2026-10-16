@@ -9,15 +9,8 @@ INPUT DESCRIPTION
   - gateways
 Tasks define process steps.
 Gateways define branching logic based on data produced by tasks.
-2. Service Registry maps each task label to one service specification.
-Each service specification includes:
-  - task id
-  - task label
-  - service url
-  - service description
-  - service functionality
-  - input (RelaxNG schema)
-  - optional output
+2. Service Registry is keyed by the task id from the process model. Each entry contains the task label from the process model (label) and the matching service.
+%%%fragments/service_registry.txt
 
 OUTPUT FORMAT
 Return a JSON object with exactly two top-level fields:
@@ -32,11 +25,10 @@ For each task in the process model include:
   - label: original task label from the process model
 
 Based on the task types additional information is provided:
-  (a) Script tasks if no matching service exist, but the step is purely data transformation or computation and no external system interaction is implied
+  (a) Script tasks
+%%%fragments/unmatched_tasks.txt
     - url: is always "script"
     - script: <ruby code>
-  The script must be generated in simple Ruby. Example: assign from another variable: data.total = data.amount + data.tax
-  Script tasks participate in process data flow exactly like service tasks and may create or update data.* variables used by downstream tasks and gateways.
   (b) Service tasks if a matching service exists in the registry:
     - url: service endpoint
     - input: required parameters with concrete values if derivable from process logic
@@ -47,9 +39,10 @@ Each input value MUST follow exactly one of the following formats:
   1. Literal value (no change)
   If the value is constant:
   "intensity": 90
-  2. Value from previous task output
-  If the value comes from another task’s output:
-  "sample_id": "data.sample_id"
+  2. Value from previous task output or script
+  If the value comes from another task’s output or from a script:
+  "sample_id": "!data.sample_id"
+%%%fragments/data_references.txt
 
 OUTPUT RULES
 Include output only if required. Otherwise omit it.
@@ -67,16 +60,11 @@ Value sources
   (b) Nested field access is used when the required value is located inside a specific key within result.
       "data.ambient_light_lumens": "result['some_key']"
 Required conversions
-  All output values are STRING by default.
-  If the operation description specifies a numeric type or the semantic meaning implies a numeric type, a conversion MUST be applied.
-  Type rules:
-  - If the value is defined as or implied to be a float ALWAYS use .to_f
-  - If the value is defined as or implied to be an integer ALWAYS use .to_i
+%%%fragments/numeric_conversion.txt
   Examples:
   "data.ambient_light_lux": "result.to_f"
   "data.temperature": "result['value'].to_f"
   "data.count": "result.to_i"
-Do NOT omit a conversion!!!
 
 Tasks that are not script or service tasks are ignored!!!
 
@@ -143,11 +131,11 @@ OUTPUT STRUCTURE EXAMPLE (SCHEMA ONLY)
       "url": "...",
       "input": {
         "param1": "value",
-        "param2": "data.some_output"
+        "param2": "!data.some_output"
       },
       "output": {
-        "data.some_output": "result['dome_key']",
-        "data.some_output": "result.to_i"
+        "data.some_output": "result['some_key']",
+        "data.other_output": "result.to_i"
       }
     },
     "task_id": {

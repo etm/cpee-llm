@@ -1,0 +1,6 @@
+The <method> field must strictly follow the Service Registry specification.
+If the service specification defines a method, use exactly that value. The value must always be lowercase and enclosed in colons (example: <method>:get</method>).
+Never invent, infer, or assume a method value that is not explicitly defined in the service specification:
+<parameters>
+  <method/>
+</parameters>

@@ -1,0 +1,1 @@
+Endpoint names are derived from the task label: remove all characters except letters and digits, and convert the result to lowercase, e.g. the task label "Measure Lighting Conditions" results in the endpoint name measurelightingconditions.

@@ -55,18 +55,22 @@ module CPEE
       end #}}}
 
       def build_system_prompt(name) #{{{
-        sp = File.read(File.join(__dir__,"prompts","system",name))
-        sp.gsub!(/(^|\n)[\t ]*%%%([^\n]+)(\n|$)/) do |e|
+        expand_system_includes(File.read(File.join(__dir__,"prompts","system",name)),[name])
+      end #}}}
+
+      # replaces %%%file lines recursively, seen guards against include cycles
+      def expand_system_includes(sp,seen) #{{{
+        sp.gsub(/(^|\n)[\t ]*%%%([^\n]+)(\n|$)/) do |e|
           b = $1
-          m = $2
+          m = $2.strip
           a = $3
-          if File.exist? File.join(__dir__,"prompts","system",m)
-            "#{a}#{File.read(File.join(__dir__,"prompts","system",m))}#{b}"
+          f = File.join(__dir__,"prompts","system",m)
+          if File.exist?(f) && !seen.include?(m)
+            "#{a}#{expand_system_includes(File.read(f),seen + [m])}#{b}"
           else
             "#{a}#{b}"
           end
         end
-        sp
       end #}}}
 
       def build_user_prompt(name,opts) #{{{

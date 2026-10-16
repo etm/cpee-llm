@@ -1,0 +1,2 @@
+## Inclusive Gateway
+An Inclusive Gateway differs from the Exclusive Gateway only by the attribute mode="inclusive".

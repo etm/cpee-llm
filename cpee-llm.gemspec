@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
 
   s.description      = "see http://cpee.org"
 
-  s.files            = Dir['{server/*,tools/**/*,lib/**/*}'] + %w(LICENSE Rakefile cpee-llm.gemspec README.md AUTHORS)
+  s.files            = Dir['{server/*,tools/**/*,lib/**/*}'] - Dir['lib/cpee/llm/prompts/legacy{,/**/*}'] + %w(LICENSE Rakefile cpee-llm.gemspec README.md AUTHORS)
   s.require_path     = 'lib'
   s.extra_rdoc_files = ['README.md']
   s.bindir           = 'tools'

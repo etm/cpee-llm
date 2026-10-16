@@ -1,0 +1,2 @@
+Returned service values are processed inside <finalize output="result">, where result is the variable containing the service response.
+result can be a single value or an object. Inside <finalize>, assign result directly (<finalize output="result"> data.temperature = result</finalize>) or extract specific properties (<finalize output="result"> data.temperature = result["temperature"].to_f; data.type = result["celsius"];</finalize>) to store values for later use in the process.

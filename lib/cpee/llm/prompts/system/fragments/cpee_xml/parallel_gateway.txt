@@ -1,0 +1,6 @@
+## Parallel Gateway
+Parallel execution is represented by <parallel eid="e.." wait="-1" cancel="last">
+The attribute wait defines how many branches have to reach the cancel condition before other branches are considered invalid. A normal parallel has always wait="-1".
+The attribute cancel defines the cancel condition, i.e., if the wait rules are evaluated after a branch fully finishes (attribute cancel has the value "last"), or if the wait rules are evaluated after the first task of a branch finishes ((attribute cancel has the value "first").
+An event-based gateway (which is a special case of a parallel) has always wait="1" cancel="last".
+Each concurrent branch is represented by <parallel_branch eid="e..">

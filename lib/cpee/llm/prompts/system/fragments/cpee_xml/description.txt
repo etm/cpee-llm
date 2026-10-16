@@ -1,0 +1,3 @@
+# CPEE XML Process Model Structure
+The process model itself is contained entirely inside the <description color=""> element. Interpret the XML inside <description> using the following mapping.
+The color attribute controls the color of the whole process model. Individual service task colors can be set (see below).
