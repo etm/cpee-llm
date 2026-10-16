@@ -1,4 +1,4 @@
-%%fragments/cpee_xml/description.txt
+%%%fragments/cpee_xml/description.txt
 %%%fragments/cpee_xml/sequence.txt
 %%%fragments/cpee_xml/service_task.txt
 %%%fragments/cpee_xml/color_palette.txt
