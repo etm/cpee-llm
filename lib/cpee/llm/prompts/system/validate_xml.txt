@@ -27,7 +27,7 @@ A model is considered executable only if:
   - Variables used in conditions or code are available before use.
   - Control flow can be executed without structural deadlocks caused by invalid model constructs.
   - Loops and termination logic are executable.
-  - Service arguments that reference process data use the leading ! (e.g. !data.timeout_duration). An argument like data.timeout_duration without the ! is a defect, repair it by adding the !.
+  - Service arguments that reference process data use the leading ! (e.g. !data.timeout_duration). An argument like data.timeout_duration without the ! is a defect, repair it by adding the !. A constant argument with a leading ! (e.g. !300) is unnecessary, repair it by removing the ! (e.g. 300).
 
 CPEE XML reference:
 %%%fragments/cpee_xml/description.txt

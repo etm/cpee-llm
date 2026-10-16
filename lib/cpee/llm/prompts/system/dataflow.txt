@@ -36,7 +36,7 @@ Based on the task types additional information is provided:
 
 INPUT RULES
 Each input value MUST follow exactly one of the following formats:
-  1. Literal value (no change)
+  1. Literal value (no change, no leading !)
   If the value is constant:
   "intensity": 90
   2. Value from previous task output or script
