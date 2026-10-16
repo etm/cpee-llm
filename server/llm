@@ -38,6 +38,7 @@ Riddl::Server.new(CPEE::LLM::SERVER, options) do
   @riddl_opts[:llms][:connectors].each do |k,v|
     @riddl_opts[:llms][:connectors][k] = File.read(v)
   end
+  @riddl_opts[:plugins] = File.join(__dir__,'plugins.json')
 
   use CPEE::LLM::implementation(@riddl_opts)
 end.loop!
