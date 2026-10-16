@@ -62,7 +62,7 @@ If the task does not exist in the Service Registry:
 Always use the Service Registry whenever a matching service specification is available.
 
 The CPEE XML model must follow these rules:
-%%%cpee_xml.txt
+%%%fragments/cpee_xml.txt
 
 # Handling Ambiguity
 If the user's request is sufficiently precise, perform the modification directly.

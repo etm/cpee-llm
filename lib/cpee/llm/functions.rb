@@ -59,8 +59,8 @@ module CPEE
 
       def generate_model(myllm,user_input,temperature,llms) #{{{
         error_handler do
-          system_prompt = build_system_prompt("generate1.txt")
-          user_prompt = build_user_prompt("process_description.txt", user_input:)
+          system_prompt = build_system_prompt("generate_mermaid.txt")
+          user_prompt = build_user_prompt("generate_mermaid.txt", user_input:)
           llm_response = generate_content(myllm,system_prompt,user_prompt,4000,temperature,llms)
           # raise exceptions if response is empty for some reason
           if llm_response.nil? || llm_response.empty?
@@ -75,8 +75,8 @@ module CPEE
         input_cpee = doc.to_s()
         input_mermaid = cpee_to_mermaid(doc.to_s())
         error_handler do
-          system_prompt = build_system_prompt("apply.txt")
-          user_prompt = build_user_prompt("process_model_adapt.txt", user_input:, process_model: input_mermaid)
+          system_prompt = build_system_prompt("adapt_mermaid.txt")
+          user_prompt = build_user_prompt("adapt.txt", user_input:, process_model: input_mermaid)
           llm_response = generate_content(myllm,system_prompt,user_prompt,4000,0,llms)
           # raise exceptions if response is empty for some reason
           if llm_response.nil? || llm_response.empty?
@@ -90,8 +90,8 @@ module CPEE
       def adapt_doccpee_description(myllm,doc,user_input,llms) #{{{
         input_cpee = doc.to_s()
         error_handler do
-          system_prompt = build_system_prompt("adapt_docxml_description.txt")
-          user_prompt = build_user_prompt("process_model_adapt.txt", user_input:, process_model: input_cpee)
+          system_prompt = build_system_prompt("adapt_xml_documentation.txt")
+          user_prompt = build_user_prompt("adapt.txt", user_input:, process_model: input_cpee)
           llm_response = generate_content(myllm,system_prompt,user_prompt,16000,0,llms)
           # raise exceptions if response is empty for some reason
           if llm_response.nil? || llm_response.empty?
@@ -120,7 +120,7 @@ module CPEE
 
         error_handler do
           system_prompt = build_system_prompt("adapt_xml_endpoints.txt")
-          user_prompt = build_user_prompt("process_model_adapt_api.txt", user_input:, process_model: testset, api_specification: endpoints)
+          user_prompt = build_user_prompt("adapt_xml_endpoints.txt", user_input:, process_model: testset, api_specification: endpoints)
           llm_response = generate_content(myllm,system_prompt,user_prompt,15000,0,llms)
           # raise exceptions if response is empty for some reason
           if llm_response.nil? || llm_response.empty?
@@ -144,8 +144,8 @@ module CPEE
         input_cpee = doc.to_s()
         input_mermaid = cpee_to_mermaid(doc.to_s())
         error_handler do
-          system_prompt = build_system_prompt("describe.txt")
-          user_prompt = build_user_prompt("process_model_text.txt", user_input: input_mermaid)
+          system_prompt = build_system_prompt("describe_text.txt")
+          user_prompt = build_user_prompt("describe_text.txt", user_input: input_mermaid)
           llm_response = generate_content(myllm,system_prompt,user_prompt,4000,0,llms)
           # raise exceptions if response is empty for some reason
           if llm_response.nil? || llm_response.empty?
@@ -195,8 +195,8 @@ module CPEE
 
       def generate_endpoint_model(myllm,user_input,endpoints,llms) #{{{
         error_handler do
-          system_prompt = build_system_prompt("generate_enpoints.txt")
-          user_prompt = build_user_prompt("process_description_endpoints.txt", user_input:, endpoints:)
+          system_prompt = build_system_prompt("generate_mermaid_endpoints.txt")
+          user_prompt = build_user_prompt("generate_mermaid_endpoints.txt", user_input:, endpoints:)
           llm_response = generate_content(myllm,system_prompt,user_prompt,4000,0.1,llms)
           # raise exceptions if response is empty for some reason
           if llm_response.nil? || llm_response.empty?
@@ -210,7 +210,7 @@ module CPEE
       def validate_cpee_model(myllm,cpee_model,llms) #{{{
         error_handler do
           system_prompt = build_system_prompt("validate_xml.txt")
-          user_prompt = build_user_prompt("cpee_repair.txt", cpee_model:)
+          user_prompt = build_user_prompt("validate_xml.txt", cpee_model:)
           llm_response = generate_content(myllm,system_prompt,user_prompt,0,0.1,llms)
           if llm_response.nil? || llm_response.empty?
             raise LLMError.new("Something went wrong and your content was not generated!", 500)

@@ -21,8 +21,8 @@ Internally perform the following steps:
 6. Update documentation flow if necessary.
 7. Generate the complete updated CPEE XML description.
 
-%%%cpee_xml.txt
-%%%cpee_xml_documentation_modelling.txt
+%%%fragments/cpee_xml.txt
+%%%fragments/cpee_xml/documentation.txt
 
 For the purpose of modelling, arguments can be ignored and don't have to carry any values. Code also can be left empty. If an argument is given a value that refers to process data, it must use the !data.some_value syntax described above.
 
