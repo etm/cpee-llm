@@ -2,12 +2,12 @@ Consider the following user input:
 
   %%%user_input
 
-Consider the follwing list of plugins
+Consider the following list of plugins
 
   %%%plugins
 
-If appropriate, select a plugin, and return its id as json, e.g., { 'id': 123 }.
-If a plugin is appropriate for a part of the text, replace the text with %%% and return it as part of the json, e.g., { "id": 123, "text": "Some text. %%%. Some more text." }.
+If appropriate, select a plugin, and return its id as json, e.g., { "id": 123 }.
+If a plugin is appropriate for a part of the text, replace the text with %%% and return it as part of the json, e.g., { "id": 123, "input": "Some text. %%%. Some more text." }.
 If nothing seems suitable return "null". This includes cases where the user input
 does not convey any intent about creating, adding to, or modifying a process
 model at all, e.g. "what is the weather today", "2+2", or "12".

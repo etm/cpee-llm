@@ -1,0 +1,20 @@
+## Service Task
+A BPMN Service Task is represented by a `<call id="..." endpoint="...">` element.
+The endpoint of the service is stored in the **endpoint attribute**.
+<call endpoint="measurelightingconditions">
+The following child elements may appear inside `<call>`:
+├── parameters
+│   ├── label
+│   ├── color
+│   ├── method
+│   └── arguments
+├── code
+│   ├── signal
+│   ├── prepare
+│   ├── finalize
+│   ├── update
+│   └── rescue
+├── annotations
+└── documentation
+
+The parameters element stores task metadata, such as its label and display color. The <label> is the task name. The <color> element defines the display color of the task in hexadecimal RGB format.

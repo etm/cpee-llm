@@ -1,0 +1,7 @@
+## Exclusive Gateway
+An Exclusive Gateway is represented by <choose eid="..." mode="exclusive">
+Each outgoing branch is represented by <alternative condition="..." eid="e.."> child.
+The branch condition is stored in the **condition attribute**.
+<alternative condition="data.temperature > 30" eid="e1">
+Conditions must be valid Ruby expressions.
+Default branch has no conditions. <otherwise eid="..."/>.

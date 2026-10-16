@@ -1,0 +1,2 @@
+## Sequential Flow
+Sequential execution is represented by sibling XML elements appearing in order inside the same parent element.

@@ -27,6 +27,21 @@ A model is considered executable only if:
   - Variables used in conditions or code are available before use.
   - Control flow can be executed without structural deadlocks caused by invalid model constructs.
   - Loops and termination logic are executable.
+  - Service arguments that reference process data use the leading ! (e.g. !data.timeout_duration). An argument like data.timeout_duration without the ! is a defect, repair it by adding the !.
+
+CPEE XML reference:
+%%%fragments/cpee_xml/description.txt
+%%%fragments/cpee_xml/sequence.txt
+%%%fragments/cpee_xml/service_task.txt
+%%%fragments/cpee_xml/arguments.txt
+%%%fragments/cpee_xml/finalize.txt
+%%%fragments/cpee_xml/script_task.txt
+%%%fragments/cpee_xml/exclusive_gateway.txt
+%%%fragments/cpee_xml/inclusive_gateway.txt
+%%%fragments/cpee_xml/loop.txt
+%%%fragments/cpee_xml/parallel_gateway.txt
+%%%fragments/cpee_xml/pause.txt
+%%%fragments/cpee_xml/variables.txt
 
 Output rules:
 * If the model is already executable and no repair is required, output exactly: PERFECT

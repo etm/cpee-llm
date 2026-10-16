@@ -1,0 +1,3 @@
+## Variables
+Variables are referenced as data.variable_name in code (script tasks, finalize) and in conditions. In service arguments they must be prefixed with !, i.e. !data.variable_name.
+%%%fragments/numeric_conversion.txt

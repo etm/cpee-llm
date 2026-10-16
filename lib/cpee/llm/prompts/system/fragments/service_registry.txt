@@ -1,0 +1,6 @@
+Each service in the service registry is described by:
+  - service url: the URL of the service
+  - description: one or more alternative task labels for the service, separated by ";"
+  - functionality: what the service does
+  - input: the input parameters of the service (RelaxNG schema)
+  - output: optional, the values the service returns

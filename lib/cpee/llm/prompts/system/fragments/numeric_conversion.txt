@@ -1,0 +1,5 @@
+Service outputs are returned as strings unless otherwise specified.
+If the service specification defines a numeric type, or the semantic meaning implies a numeric type, a conversion MUST be applied before the value is assigned to a workflow variable:
+  - If the value is defined as or implied to be a float ALWAYS use .to_f, e.g. data.temperature = result["temperature"].to_f
+  - If the value is defined as or implied to be an integer ALWAYS use .to_i, e.g. data.count = result.to_i
+Do NOT omit a conversion!!!

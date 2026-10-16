@@ -1,0 +1,4 @@
+If no matching service exists for a task, but the step is purely data transformation or computation and no external system interaction is implied, implement it as a script task.
+The script must be generated in simple Ruby. Example: assign from another variable: data.total = data.amount + data.tax
+Script tasks participate in process data flow exactly like service tasks and may create or update data.* variables used by downstream tasks and gateways.
+If no matching service exists and the step is not pure computation, the task stays an unconfigured service task: do not invent a service url, input parameters, output mappings, or implementation details.

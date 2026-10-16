@@ -14,7 +14,7 @@ The documentation element may describe the service implementation as well as its
 The <description> elements contain optional textual information about the task's behavior, including the process variables consumed (<in>), produced (<out>), or implementation-specific details (<implementation>).
 Empty <description> elements indicate that no additional semantic information is provided.
 
-If a `<documentation>` element does not exist for a Service Task, append an empty `<documentation>` element. Empty `<documentation>` conmtains only <in> and <implementation>. Include <out> only in tasks, where output is defined.
+If a `<documentation>` element does not exist for a Service Task, append an empty `<documentation>` element. Empty `<documentation>` contains only <in> and <implementation>. Include <out> only in tasks, where output is defined.
 
 #Outputs:
   Every new output created by the Service Task must be added to the <out><description> element.

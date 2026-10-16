@@ -1,0 +1,10 @@
+Use only the following color palette:
+  * White — #ffffff
+  * Blue — #d4e1f1
+  * Green — #d8f0dd
+  * Yellow — #ffffcc
+  * Purple — #e4c3e4
+  * Pink — #f8a8c6
+  * Brown — #ded0c5
+  * Gray — #deddda
+The same color palette also applies to the color attribute of <description> and to the color attribute of <manipulate>.

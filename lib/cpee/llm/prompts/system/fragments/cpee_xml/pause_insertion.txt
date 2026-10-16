@@ -1,0 +1,3 @@
+When the user requests to pause, hold, or stop the process, insert a <stop> element.
+The id attribute must be unique within the process model. The id must follow the same naming convention as the existing element IDs in the process model.
+Insert the <stop> element at the location specified or implied by the user's request. Otherwise, insert the <stop> element as the last element of the process.

@@ -7,9 +7,9 @@ Plugins are defined as json, e.g.:
 
 { "id": 1, "priority": 2, "url": "https://cpee.org/llm/plugins/aaa", "description": "Description what the plugin does", ... }
 
-If one of the plugins is matchin (according to its description), return its id
-as json { 'id': 12345}. \ If multiple plugins match, choose the one with the
-lowest priority. If one the plugins is only partially suitable, remove that
+If one of the plugins is matching (according to its description), return its id
+as json { "id": 12345 }. If multiple plugins match, choose the one with the
+lowest priority. If one of the plugins is only partially suitable, remove that
 part of the text that the plugin requires as input, and replace it with %%%.
 Write the text into a key "input". Replacing the whole input with %%% is fine.
 Replacing a part is also fine, depending on the user input.

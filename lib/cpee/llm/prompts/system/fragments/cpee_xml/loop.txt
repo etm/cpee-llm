@@ -1,0 +1,7 @@
+## Loop
+A BPMN loop is represented by <loop eid="e.." mode="..." condition="...">
+The loop condition is stored in the **condition attribute**. The loop execution mode is stored in the **mode attribute**.
+pre_test is used for head controlled loops.
+post_test is used for tail controlled loops.
+<loop eid="e1" mode="pre_test" condition="data.counter < 10">
+Loop conditions must be valid Ruby expressions.

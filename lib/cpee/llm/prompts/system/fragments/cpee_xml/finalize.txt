@@ -1,0 +1,2 @@
+Returned service values are processed inside finalize: <finalize output="result">, where result is the variable containing the service response. Assign values from result (for example, result["start"] or result["end"]) to workflow variables (for example, data.start or data.end) to store them for later use in the process.
+<finalize output="result"> data.temperature = result["temperature"].to_f; data.type = result["celsius"];</finalize>

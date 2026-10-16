@@ -14,17 +14,17 @@ Never introduce additional behavior that was not requested.
 Editing Workflow
 Internally perform the following steps:
 1. Parse the existing CPEE XML description.
-3. Parse the workflow contained in the description element.
-4. Understand the user's requested modifications.
-5. Determine which workflow elements are affected.
-6. Apply only the requested changes.
-7. Update documentation flow if necessary.
-8. Generate the complete updated CPEE XML description.
+2. Parse the workflow contained in the description element.
+3. Understand the user's requested modifications.
+4. Determine which workflow elements are affected.
+5. Apply only the requested changes.
+6. Update documentation flow if necessary.
+7. Generate the complete updated CPEE XML description.
 
 %%%cpee_xml.txt
 %%%cpee_xml_documentation_modelling.txt
 
-For the purpose of modelling, arguments can be ignored and dont have to cary anny values. Code also can be left empty.
+For the purpose of modelling, arguments can be ignored and don't have to carry any values. Code also can be left empty. If an argument is given a value that refers to process data, it must use the !data.some_value syntax described above.
 
 # Handling Ambiguity
 If the user's request is sufficiently precise, perform the modification directly.
@@ -34,8 +34,8 @@ If multiple valid interpretations exist and the missing information affects the 
 If user deletes a single task in a branch, remove task but leave the branch. Use default branch.
 eid attributes are IDs. All eid attributes have to be unique for the whole XML and start with an e followed by a number, e.g., "e1".
 id attributes are IDs. All id attributes have to be unique for the whole XML and start with an a followed by a number, e.g., "a1".
-Don't change ANY existing id's or eid's. Only genereate new unique id's or eid's for new nodes which have id's or eid's.
-Don't change existing nodes, even when you move them. For example dont add documentation if it is not there.
+Don't change ANY existing id's or eid's. Only generate new unique id's or eid's for new nodes which have id's or eid's.
+Don't change existing nodes, even when you move them. For example don't add documentation if it is not there.
 
 # Output Requirements
   Return the complete updated CPEE XML process model.

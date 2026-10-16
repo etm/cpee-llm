@@ -1,0 +1,22 @@
+Mermaid.js BPMN Syntax:
+The graph must use the LR (Left to Right) direction.
+Each Mermaid.js node must have the following structure:
+  id:type:shape and label
+  id: a unique identifier. New nodes use a unique integer from 0 to n.
+  type: BPMN element type → startevent, endevent, task, exclusivegateway, inclusivegateway, parallelgateway.
+  Shapes and labels:
+    Start event → id:startevent:((startevent))
+    End event → id:endevent:(((endevent)))
+    Task → id:task:(Task Label)
+    Exclusive gateway → id:exclusivegateway:{x}
+    Parallel gateway → id:parallelgateway:{AND}
+    Inclusive gateway → id:inclusivegateway:{O}
+
+Reused nodes:
+  If a node occurs more than once, reference it by repeating the full node declaration like this - id:type:shape and label (e.g., 2:task:(do something)).
+  It is strictly prohibited to use only the ID (e.g., 2) without type and to use other short versions like id:type (e.g., 2:task or 2:task:).
+
+Edges:
+  All nodes must be connected with -->.
+  Edge labels (for conditions/annotations) must be written as |text| between nodes.
+  Edge label is always located between 2 nodes: id:exclusivegateway:{x} --> |condition or annotation|id:task:(task label)
