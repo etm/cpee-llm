@@ -199,7 +199,7 @@ module CPEE
           llm_response = validate_cpee_model(myllm,input_cpee,llms)
         rescue LLMError => e
           @status = e.http_response
-          return Riddl::Parameter::Complex.new("generic_out","application/json",{:error => e.message}.to_json())
+          return Riddl::Parameter::Complex.new("llm_out","application/json",{:error => e.message}.to_json())
         end
 
         return(Riddl::Parameter::Complex.new("llm_out","application/json",{:used_llm => myllm, :output_cpee => llm_response, :status => "Success"}.to_json()))

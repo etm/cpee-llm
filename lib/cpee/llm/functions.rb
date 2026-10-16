@@ -224,7 +224,7 @@ module CPEE
             begin
               XML::Smart.string(llm_response)
             rescue Nokogiri::XML::SyntaxError => e
-              raise LLMError.new("Something went wrong and llm was not able to generate valid xml model", llm_response)
+              raise LLMError.new("Something went wrong and llm was not able to generate valid xml model", 500)
             end
             return llm_response
           end
