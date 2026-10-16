@@ -1,6 +1,8 @@
-Service input parameters are stored inside arguments. Each argument is represented by its own child element.
-<arguments>
-    <min>1</min>
-    <max>100</max>
-</arguments>
+Service input parameters are stored inside arguments (which in turn are always stored inside parameters, see structure above). Each argument is represented by its own child element.
+<parameters>
+  <arguments>
+      <min>1</min>
+      <max>100</max>
+  </arguments>
+</parameters>
 %%%fragments/data_references.txt

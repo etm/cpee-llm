@@ -2,8 +2,10 @@ If a service argument (input parameter) depends on a previously computed or retu
 The leading ! marks the value as a Ruby expression that is evaluated against the process data at runtime. It is NOT a boolean negation and must never be removed.
 Without the leading ! the value is passed as a literal string, i.e. data.timeout_duration would send the text "data.timeout_duration" instead of its value.
 Example (XML):
-<arguments>
-    <timeout>!data.timeout_duration</timeout>
-</arguments>
+<parameters>
+  <arguments>
+      <timeout>!data.timeout_duration</timeout>
+  </arguments>
+</parameters>
 Example (JSON):
 "timeout": "!data.timeout_duration"
