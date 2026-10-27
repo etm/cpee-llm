@@ -160,7 +160,7 @@ module CPEE
           if !value['output'].nil?
             result = value['output'].map { |k, v| "#{k} = #{v}" }.join("; ")
             cur_task.add(code_fragment.root)
-            finalize = cur_task.find('//d:finalize').first
+            finalize = cur_task.find('.//d:finalize').first
             finalize.text = result
           end
         end
