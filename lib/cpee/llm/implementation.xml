@@ -88,6 +88,12 @@
 
   <message name="dataflow_in">
     <parameter name="rpst_xml" mimetype="text/xml"/>
+    <parameter name="user_input" mimetype="text/plain"/>
+    <parameter name="llm" mimetype="text/plain"/>
+  </message>
+
+  <message name="validate_in">
+    <parameter name="rpst_xml" mimetype="text/xml"/>
     <parameter name="llm" mimetype="text/plain"/>
   </message>
 
@@ -114,7 +120,7 @@
 
     <resource relative="validate">
       <resource relative="xml">
-        <post in="dataflow_in" out="llm_out"/>
+        <post in="validate_in" out="llm_out"/>
       </resource>
     </resource>
 

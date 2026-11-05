@@ -6,4 +6,11 @@ Given the process model:
 
   %%%api_specification
 
-Define the execution context and return a JSON specification.
+... and given the user input:
+
+  %%%user_input
+
+Define the execution context considering the concrete scenarios described in the user input.
+
+Return a JSON specification.
+

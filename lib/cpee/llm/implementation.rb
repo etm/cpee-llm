@@ -147,7 +147,8 @@ module CPEE
         #get parameters
         begin
           input_cpee = @p[0].value().read()
-          myllm = @p[1].value().read()
+          user_input = @p[1].value().read()
+          myllm = @p[2].value().read()
           doc = XML::Smart.string(input_cpee)
         rescue Exception => e
           @status = 400
@@ -166,7 +167,7 @@ module CPEE
 
         #generate data flow
         begin
-          dataflow = generate_dataflow(myllm,mermaid_model,api_speck,llms)
+          dataflow = generate_dataflow(myllm,user_input,mermaid_model,api_speck,llms)
         rescue LLMError => e
           @status = e.http_response || 400
           return Riddl::Parameter::Complex.new("llm_out","application/json",{:error => e.message}.to_json())
@@ -238,7 +239,7 @@ module CPEE
 
           on resource 'validate' do
             on resource 'xml' do
-              run ValidateDataFlow, opts[:llms] if post 'dataflow_in'
+              run ValidateDataFlow, opts[:llms] if post 'validate_in'
             end
           end
 

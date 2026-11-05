@@ -117,7 +117,7 @@ module CPEE
           begin
             if value['url'] == 'script'
               cur_el = cpee_model.find("//d:call[@id='#{i}']").first
-              alt = cpee_model.find('string(//d:call/@a:alt_id)')
+              alt = cur_el.find('string(@a:alt_id)')
               info = XML::Smart.string('<manipulate id="" label="" a:alt_id=""></manipulate>')
               info.root.attributes['a:alt_id'] = alt
               info.root.attributes['id'] = i
@@ -132,7 +132,7 @@ module CPEE
               cur_task.attributes["endpoint"] = short_l
               endxml.root.add(short_l).text = value["url"]
               # set input if exists
-              if value['input'].length > 0
+              if value['input'].is_a?(Hash) && value['input'].any?
                 args = cur_task.find('d:parameters/d:arguments').first
                 value["input"].each do |i,iv|
                   if iv.is_a?(String)
