@@ -117,7 +117,7 @@ module CPEE
           begin
             if value['url'] == 'script'
               cur_el = cpee_model.find("//d:call[@id='#{i}']").first
-              alt = cpee_model.find('string(//d:call/@a:alt_id)')
+              alt = cur_el.find('string(@a:alt_id)')
               info = XML::Smart.string('<manipulate id="" label="" a:alt_id=""></manipulate>')
               info.root.attributes['a:alt_id'] = alt
               info.root.attributes['id'] = i

@@ -168,10 +168,10 @@ module CPEE
         end
       end #}}}
 
-      def generate_dataflow(myllm,mermaid_model,api_specification,llms) #{{{
+      def generate_dataflow(myllm,user_input,mermaid_model,api_specification,llms) #{{{
         error_handler do
           system_prompt = build_system_prompt("dataflow.txt")
-          user_prompt = build_user_prompt("dataflow.txt", mermaid_model:, api_specification:)
+          user_prompt = build_user_prompt("dataflow.txt", user_input:, mermaid_model:, api_specification:)
           llm_response = generate_content(myllm, system_prompt, user_prompt, 4000, 0.1, llms)
           # raise exceptions if response is empty for some reason
           if llm_response.nil? || llm_response.empty?
