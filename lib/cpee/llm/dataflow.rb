@@ -60,7 +60,7 @@ module CPEE
             [ resource.find('string(./endpoint)'),
               resource.find('string(./functionality)'),
               get_input(resource.attributes['endpoint']),
-              resource.find('string(./ouput)')
+              resource.find('string(./output)')
             ]
           ]
         end.to_h
