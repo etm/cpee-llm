@@ -132,7 +132,7 @@ module CPEE
               cur_task.attributes["endpoint"] = short_l
               endxml.root.add(short_l).text = value["url"]
               # set input if exists
-              if value['input'].length > 0
+              if value['input'].is_a?(Hash) && value['input'].any?
                 args = cur_task.find('d:parameters/d:arguments').first
                 value["input"].each do |i,iv|
                   if iv.is_a?(String)
