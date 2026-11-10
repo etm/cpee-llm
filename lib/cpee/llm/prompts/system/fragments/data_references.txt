@@ -1,7 +1,9 @@
 If a service argument (input parameter) depends on a previously computed or returned value, i.e. on process data, it must be provided using the !data.some_value syntax. A Ruby expression over process data is also allowed, e.g. !data.minutes * 60.
 The leading ! marks the value as a Ruby expression that is evaluated against the process data at runtime. It is NOT a boolean negation and must never be removed.
 Without the leading ! the value is passed as a literal string, i.e. data.timeout_duration would send the text "data.timeout_duration" instead of its value.
-Use the leading ! ONLY when the value references process data (data.*). Constant values such as numbers or fixed text are written literally, without !, e.g. 300 and not !300.
+Use the leading ! when the value references process data (!data.*). Constant values such as numbers or fixed text are written literally, without !, e.g. 300 and not !300.
+Leading ! can also be used when evaluating expressions at runtime, e.g., sending the current time with "!Time.now", or "!Date.today + 1" for do tomorrows date. Of course it can be also used to access parts of data elements like "!data.somejson['key']['subkey']".
+
 Example (XML):
 <parameters>
   <arguments>
