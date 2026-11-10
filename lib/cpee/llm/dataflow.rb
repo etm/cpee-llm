@@ -167,8 +167,8 @@ module CPEE
 
         # ==============================conditions (only alternative)=======================
         json_e['gateway_conditions'].each do |i, value|
-          if i.end_with?("s")
-            sid = i.chomp("s")
+          if i =~ /[se]\z/
+            sid = i.chop
             choose = cpee_model.find("//d:choose[@eid = '#{sid}']").first
             if choose.nil?
               loop = cpee_model.find("//d:loop[@eid = '#{sid}']").first
