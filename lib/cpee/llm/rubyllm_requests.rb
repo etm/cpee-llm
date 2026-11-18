@@ -37,14 +37,16 @@ module CPEE
       USED_TOKENS_HEADER = 'CPEE-LLM-Used-Tokens'
 
       def add_used_tokens(tokens) #{{{
-        @used_tokens ||= 0
+        @used_tokens ||= { input: 0, output: 0 }
         return if tokens.nil?
-        @used_tokens += tokens.input.to_i + tokens.cached.to_i + tokens.cache_creation.to_i + tokens.output.to_i
+        @used_tokens[:input] += tokens.input.to_i + tokens.cached.to_i + tokens.cache_creation.to_i
+        @used_tokens[:output] += tokens.output.to_i
       end #}}}
 
       def headers #{{{
+        used = @used_tokens || { input: 0, output: 0 }
         super + [
-          Riddl::Header.new(USED_TOKENS_HEADER, (@used_tokens || 0).to_s),
+          Riddl::Header.new(USED_TOKENS_HEADER, "input=#{used[:input]}, output=#{used[:output]}"),
           Riddl::Header.new('Access-Control-Expose-Headers', USED_TOKENS_HEADER)
         ]
       end #}}}

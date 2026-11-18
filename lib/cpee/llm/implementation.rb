@@ -220,6 +220,7 @@ module CPEE
         begin
           response = guess_intent(myllm,input_cpee,plugins,llms)
         rescue LLMError => e
+          p e
           @status = e.http_response
           return Riddl::Parameter::Complex.new("user_intent","application/json",{:error => e.message}.to_json())
         end
