@@ -122,7 +122,8 @@ module CPEE
               info.root.attributes['a:alt_id'] = alt
               info.root.attributes['id'] = i
               info.root.attributes['label'] = value['label']
-              info.root.add("code", value['script'])
+              script = value['script'].is_a?(Array) ? value['script'].join("\n") : value['script']
+              info.root.add("code", script)
               cpee_model.find("//d:*[@id='#{i}']").first.replace_by(info.root)
             else
               cur_task =  cpee_model.find("//d:call[@id='#{i}']").first
@@ -158,7 +159,7 @@ module CPEE
           XML
 
           if !value['output'].nil?
-            result = value['output'].map { |k, v| "#{k} = #{v}" }.join("; ")
+            result = value['output'].map { |k, v| "#{k} = #{v}" }.join("\n")
             cur_task.add(code_fragment.root)
             finalize = cur_task.find('.//d:finalize').first
             finalize.text = result

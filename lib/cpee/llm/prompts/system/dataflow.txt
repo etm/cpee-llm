@@ -28,7 +28,7 @@ Based on the task types additional information is provided:
   (a) Script tasks
 %%%fragments/unmatched_tasks.txt
     - url: is always "script"
-    - script: <ruby code>
+    - script: <ruby code> as a JSON array of strings, one Ruby statement per element. Never join statements with ";".
   (b) Service tasks if a matching service exists in the registry:
     - url: service endpoint
     - input: required parameters with concrete values if derivable from process logic
@@ -141,7 +141,10 @@ OUTPUT STRUCTURE EXAMPLE (SCHEMA ONLY)
     "task_id": {
       "label": "...",
       "url": "script",
-      "script": "data.some_other_value = 12"
+      "script": [
+        "data.some_other_value = 12",
+        "data.total = data.amount + data.some_other_value"
+      ]
     }
   },
   "gateway_conditions": {
